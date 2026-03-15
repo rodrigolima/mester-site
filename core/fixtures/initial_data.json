@@ -1,0 +1,94 @@
+[
+{
+  "model": "core.video",
+  "pk": 1,
+  "fields": {
+    "titulo": "Culinária e Artesanato - Baia de Todos o Santos",
+    "descricao": "Culinária e Artesanato - Baia de Todos o Santos",
+    "categoria": "documentario",
+    "bunny_embed_url": "https://player.mediadelivery.net/play/617763/42a51eef-8b88-46c6-b1dd-71a62a48c56d",
+    "thumbnail": "videos/thumbnails/iShot_2026-03-15_12.14.53.png",
+    "destaque": false,
+    "ativo": true,
+    "ordem": 0,
+    "criado_em": "2026-03-15T14:30:54.149Z"
+  }
+},
+{
+  "model": "core.livro",
+  "pk": 1,
+  "fields": {
+    "titulo": "Himalaya",
+    "subtitulo": "Himalaya",
+    "descricao": "Himalayan mountains are a giant natural barrier between the south east Asia region and the northern plains of China and Tibet. Nevertheless, crossing the mountain range favored commerce and trade for centuries. It also has allowed different cultures and religions to live closer than in other places of the world.\r\n\r\nAs montanhas do Himalaia são uma gigantesca barreira natural entre a região do sudeste da Ásia e as planícies do norte da China e do Tibete. No entanto, a travessia das montanhas favoreceu o comércio e as trocas durante séculos. Também permitiu que diferentes culturas e religiões vivessem mais próximas do que em outros lugares do mundo.",
+    "categoria": "fotografia",
+    "capa": "livros/capas/iShot_2026-03-15_12.30.50.png",
+    "ano": 2017,
+    "autor": "Cristiano Burmester",
+    "destaque": false,
+    "ativo": true,
+    "ordem": 0,
+    "criado_em": "2026-03-15T15:33:52.497Z"
+  }
+},
+{
+  "model": "core.fotolivro",
+  "pk": 1,
+  "fields": {
+    "livro": 1,
+    "imagem": "livros/fotos/Hamalaya_01.JPG",
+    "legenda": "Swayambhunath temple / Templo Swayambhunath",
+    "ordem": 1
+  }
+},
+{
+  "model": "core.fotolivro",
+  "pk": 2,
+  "fields": {
+    "livro": 1,
+    "imagem": "livros/fotos/Hamalaya_02.JPG",
+    "legenda": "Bride and Groom / Noiva e noivo",
+    "ordem": 2
+  }
+},
+{
+  "model": "core.fotolivro",
+  "pk": 3,
+  "fields": {
+    "livro": 1,
+    "imagem": "livros/fotos/Hamalaya_03.JPG",
+    "legenda": "Street vendor / Vendedor de rua",
+    "ordem": 3
+  }
+},
+{
+  "model": "core.fotolivro",
+  "pk": 4,
+  "fields": {
+    "livro": 1,
+    "imagem": "livros/fotos/Hamalaya_04.JPG",
+    "legenda": "Up the trail / Subindo a trilha",
+    "ordem": 4
+  }
+},
+{
+  "model": "core.fotolivro",
+  "pk": 5,
+  "fields": {
+    "livro": 1,
+    "imagem": "livros/fotos/Hamalaya_05.JPG",
+    "legenda": "Taking a nap / Soneca",
+    "ordem": 5
+  }
+},
+{
+  "model": "core.fotolivro",
+  "pk": 6,
+  "fields": {
+    "livro": 1,
+    "imagem": "livros/fotos/Hamalaya_06.JPG",
+    "legenda": "Woman porter / Carregadora",
+    "ordem": 6
+  }
+}
+]
