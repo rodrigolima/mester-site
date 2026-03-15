@@ -1,1 +1,1 @@
-web: sh -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py loaddata initial_data && DJANGO_SUPERUSER_PASSWORD=trilhas99 python manage.py createsuperuser --noinput --username admin --email admin@mester.com.br || true && echo 'SETUP COMPLETE' && gunicorn mester_site.wsgi --bind 0.0.0.0:$PORT"
+web: python startup.py && gunicorn mester_site.wsgi --bind 0.0.0.0:$PORT
