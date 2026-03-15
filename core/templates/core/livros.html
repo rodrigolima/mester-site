@@ -1,0 +1,561 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Livros — Mester{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── PAGE HEADER ────────────────────────── */
+  .lv-header {
+    padding: 140px 80px 80px;
+    background: var(--gray-1);
+    border-bottom: 1px solid var(--border);
+  }
+  .lv-header .s-lead { margin-bottom: 0; }
+
+  /* ── LIVROS GRID ────────────────────────── */
+  .lv-section {
+    background: var(--gray-1);
+    padding: 80px 80px 112px;
+  }
+  .lv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+  }
+
+  /* ── LIVRO CARD ─────────────────────────── */
+  .l-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    overflow: hidden;
+  }
+  .l-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+
+  .l-cover {
+    position: relative;
+    width: 100%;
+    padding-top: 133%; /* 3:4 */
+    background: var(--gray-3);
+    overflow: hidden;
+  }
+  .l-cover img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--ease);
+  }
+  .l-card:hover .l-cover img {
+    transform: scale(1.04);
+  }
+
+  /* Badge de fotos */
+  .l-badge {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.5px;
+    z-index: 2;
+  }
+  .l-badge svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .l-info {
+    padding: 24px;
+  }
+  .l-cat {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .l-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+  .l-subtitle {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+  .l-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .l-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ── EMPTY STATE ────────────────────────── */
+  .lv-empty {
+    text-align: center;
+    padding: 80px 40px;
+    color: var(--text-muted);
+  }
+  .lv-empty svg {
+    width: 64px;
+    height: 64px;
+    color: var(--gray-4);
+    margin-bottom: 24px;
+  }
+  .lv-empty p {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── MODAL / GALERIA ────────────────────── */
+  .l-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    background: rgba(0, 0, 0, 0.94);
+  }
+  .l-modal.open {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Botão fechar — canto superior direito fixo */
+  .l-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #EDE9E3;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .l-modal-close:hover {
+    background: rgba(200, 16, 46, 0.2);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* Corpo do modal — layout lado a lado */
+  .l-modal-body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+
+  /* Sidebar esquerda com info do livro */
+  .l-modal-sidebar {
+    width: 320px;
+    flex-shrink: 0;
+    padding: 40px 32px;
+    overflow-y: auto;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .l-modal-cat {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .l-modal-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: #EDE9E3;
+    line-height: 1.25;
+  }
+  .l-modal-subtitle {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    color: #8A8680;
+  }
+  .l-modal-desc {
+    font-size: 14px;
+    color: #7A7670;
+    line-height: 1.7;
+  }
+  .l-modal-counter {
+    margin-top: auto;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #5C5850;
+  }
+
+  /* Área direita — galeria */
+  .l-modal-gallery {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* Foto principal */
+  .l-gallery {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 24px 72px;
+    min-height: 0;
+  }
+
+  .l-gallery-img-wrap {
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .l-gallery-img-wrap img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    display: block;
+    transition: opacity 0.3s;
+  }
+
+  .l-gallery-caption {
+    text-align: center;
+    padding: 12px 40px;
+    font-size: 14px;
+    font-style: italic;
+    color: #8A8680;
+    min-height: 44px;
+    flex-shrink: 0;
+  }
+
+  /* Setas de navegação */
+  .l-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #EDE9E3;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s;
+    z-index: 2;
+  }
+  .l-nav-btn:hover {
+    background: rgba(200, 16, 46, 0.15);
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .l-nav-prev { left: 12px; }
+  .l-nav-next { right: 12px; }
+
+  /* Thumbnails strip */
+  .l-thumbs {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    padding: 12px 40px 24px;
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+  .l-thumbs::-webkit-scrollbar { height: 2px; }
+  .l-thumbs::-webkit-scrollbar-thumb { background: var(--red); }
+
+  .l-thumb {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    border: 2px solid transparent;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s, border-color 0.2s;
+    overflow: hidden;
+  }
+  .l-thumb:hover { opacity: 0.8; }
+  .l-thumb.active {
+    border-color: var(--red);
+    opacity: 1;
+  }
+  .l-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ── RESPONSIVE ─────────────────────────── */
+  @media (max-width: 1100px) {
+    .lv-header { padding: 120px 48px 64px; }
+    .lv-section { padding: 64px 48px 80px; }
+    .l-gallery { padding: 0 60px; }
+  }
+  @media (max-width: 768px) {
+    .lv-header { padding: 100px 24px 48px; }
+    .lv-section { padding: 48px 24px 64px; }
+    .lv-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .l-modal-body { flex-direction: column; }
+    .l-modal-sidebar {
+      width: 100%;
+      padding: 20px 24px 16px;
+      border-right: none;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+      align-items: baseline;
+    }
+    .l-modal-desc { display: none; }
+    .l-modal-counter { margin-top: 0; }
+    .l-modal-close { top: 12px; right: 12px; width: 40px; height: 40px; font-size: 16px; }
+    .l-modal-title { font-size: 20px; }
+    .l-gallery { padding: 12px 48px; }
+    .l-nav-btn { width: 36px; height: 36px; font-size: 18px; }
+    .l-nav-prev { left: 6px; }
+    .l-nav-next { right: 6px; }
+    .l-thumbs { padding: 8px 16px 16px; }
+    .l-thumb { width: 48px; height: 48px; }
+  }
+  @media (max-width: 480px) {
+    .lv-grid { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <!-- ── HEADER ──────────────────────────────── -->
+  <section class="lv-header">
+    <div class="s-tag reveal">
+      <span class="s-num">●</span>
+      <span class="s-rule"></span>
+      <span class="s-lbl">Editorial</span>
+    </div>
+    <h1 class="s-title reveal">Livros.</h1>
+    <p class="s-lead reveal">Publicações de arte, fotografia e cultura que preservam memória e criam legado visual.</p>
+  </section>
+
+  <!-- ── LIVROS GRID ─────────────────────────── -->
+  <section class="lv-section">
+    {% if livros %}
+      <div class="lv-grid">
+        {% for livro in livros %}
+          <div class="l-card reveal"
+               style="transition-delay: {{ forloop.counter0 }}00ms"
+               onclick="openLivroModal({{ forloop.counter0 }})">
+            <div class="l-cover">
+              <img src="{{ livro.capa.url }}" alt="{{ livro.titulo }}" loading="lazy">
+              {% if livro.fotos.count > 0 %}
+                <div class="l-badge">
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <rect x="1" y="3" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                    <rect x="5" y="1" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.2" fill="none"/>
+                  </svg>
+                  {{ livro.fotos.count }} foto{{ livro.fotos.count|pluralize:"s" }}
+                </div>
+              {% endif %}
+            </div>
+            <div class="l-info">
+              <span class="l-cat">{{ livro.get_categoria_display }}</span>
+              <h3 class="l-title">{{ livro.titulo }}</h3>
+              {% if livro.subtitulo %}
+                <p class="l-subtitle">{{ livro.subtitulo }}</p>
+              {% endif %}
+              {% if livro.autor or livro.ano %}
+                <p class="l-meta">
+                  {% if livro.autor %}{{ livro.autor }}{% endif %}
+                  {% if livro.autor and livro.ano %} · {% endif %}
+                  {% if livro.ano %}{{ livro.ano }}{% endif %}
+                </p>
+              {% endif %}
+              <p class="l-desc">{{ livro.descricao }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="lv-empty reveal">
+        <svg viewBox="0 0 64 64" fill="none">
+          <path d="M12 8h32a4 4 0 014 4v40a4 4 0 01-4 4H12" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M12 8v48" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 12v40a4 4 0 004 4" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M20 20h16M20 28h12M20 36h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <p>Em breve, nosso acervo editorial estará disponível aqui.<br>Volte em breve!</p>
+      </div>
+    {% endif %}
+  </section>
+
+  <!-- ── MODAL / GALERIA ─────────────────────── -->
+  <div class="l-modal" id="livroModal">
+    <button class="l-modal-close" onclick="closeLivroModal()" aria-label="Fechar">✕</button>
+
+    <div class="l-modal-body">
+      <!-- Sidebar com info do livro -->
+      <div class="l-modal-sidebar">
+        <div class="l-modal-cat" id="lmCat"></div>
+        <h2 class="l-modal-title" id="lmTitle"></h2>
+        <p class="l-modal-subtitle" id="lmSubtitle"></p>
+        <p class="l-modal-desc" id="lmDesc"></p>
+        <span class="l-modal-counter" id="lmCounter"></span>
+      </div>
+
+      <!-- Galeria de fotos -->
+      <div class="l-modal-gallery">
+        <div class="l-gallery">
+          <button class="l-nav-btn l-nav-prev" onclick="galeriaPrev()" aria-label="Anterior">‹</button>
+          <div class="l-gallery-img-wrap">
+            <img id="lmMainImg" src="" alt="">
+          </div>
+          <button class="l-nav-btn l-nav-next" onclick="galeriaNext()" aria-label="Próxima">›</button>
+        </div>
+        <div class="l-gallery-caption" id="lmCaption"></div>
+        <div class="l-thumbs" id="lmThumbs"></div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Dados dos livros serializados no template
+  const livrosData = [
+    {% for livro in livros %}
+    {
+      titulo: "{{ livro.titulo|escapejs }}",
+      subtitulo: "{{ livro.subtitulo|escapejs }}",
+      descricao: "{{ livro.descricao|escapejs }}",
+      categoria: "{{ livro.get_categoria_display|escapejs }}",
+      fotos: [
+        {% for foto in livro.fotos.all %}
+        { url: "{{ foto.imagem.url }}", legenda: "{{ foto.legenda|escapejs }}" },
+        {% endfor %}
+      ]
+    },
+    {% endfor %}
+  ];
+
+  const modal = document.getElementById('livroModal');
+  let currentLivro = null;
+  let currentFoto = 0;
+
+  function openLivroModal(index) {
+    const livro = livrosData[index];
+    if (!livro || livro.fotos.length === 0) return;
+
+    currentLivro = livro;
+    currentFoto = 0;
+
+    document.getElementById('lmCat').textContent = livro.categoria;
+    document.getElementById('lmTitle').textContent = livro.titulo;
+    document.getElementById('lmSubtitle').textContent = livro.subtitulo;
+    document.getElementById('lmDesc').textContent = livro.descricao;
+
+    // Gerar thumbnails
+    const thumbsEl = document.getElementById('lmThumbs');
+    thumbsEl.innerHTML = livro.fotos.map((f, i) =>
+      `<div class="l-thumb${i === 0 ? ' active' : ''}" onclick="galeriaGoTo(${i})">
+        <img src="${f.url}" alt="${f.legenda}" loading="lazy">
+      </div>`
+    ).join('');
+
+    updateGaleria();
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLivroModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    currentLivro = null;
+  }
+
+  function updateGaleria() {
+    if (!currentLivro) return;
+    const foto = currentLivro.fotos[currentFoto];
+    document.getElementById('lmMainImg').src = foto.url;
+    document.getElementById('lmMainImg').alt = foto.legenda || currentLivro.titulo;
+    document.getElementById('lmCaption').textContent = foto.legenda || '';
+    document.getElementById('lmCounter').textContent =
+      `Foto ${currentFoto + 1} de ${currentLivro.fotos.length}`;
+
+    // Atualizar thumb ativa
+    document.querySelectorAll('.l-thumb').forEach((t, i) => {
+      t.classList.toggle('active', i === currentFoto);
+    });
+  }
+
+  function galeriaNext() {
+    if (!currentLivro) return;
+    currentFoto = (currentFoto + 1) % currentLivro.fotos.length;
+    updateGaleria();
+  }
+
+  function galeriaPrev() {
+    if (!currentLivro) return;
+    currentFoto = (currentFoto - 1 + currentLivro.fotos.length) % currentLivro.fotos.length;
+    updateGaleria();
+  }
+
+  function galeriaGoTo(index) {
+    currentFoto = index;
+    updateGaleria();
+  }
+
+  // Fechar com ESC, navegar com setas
+  document.addEventListener('keydown', function(e) {
+    if (!modal.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLivroModal();
+    if (e.key === 'ArrowRight') galeriaNext();
+    if (e.key === 'ArrowLeft') galeriaPrev();
+  });
+
+  // Fechar clicando no fundo da galeria
+  document.querySelector('.l-gallery').addEventListener('click', function(e) {
+    if (e.target === this || e.target.classList.contains('l-gallery-img-wrap')) closeLivroModal();
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,785 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Mester — Projetos de Impacto Cultural{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── HERO ────────────────────────────────── */
+  #hero {
+    padding: 140px 80px 100px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -80px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(200,16,46,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  #hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(to right, var(--red) 0%, transparent 40%);
+    opacity: 0.3;
+  }
+
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 80px;
+    align-items: end;
+    max-width: 1280px;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 32px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--red);
+  }
+
+  .hero-h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(52px, 6.5vw, 88px);
+    line-height: 1.04;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .hero-h1 em {
+    font-style: italic;
+    color: var(--red);
+    font-weight: 500;
+  }
+
+  .hero-right { padding-bottom: 8px; }
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-dim);
+    line-height: 1.75;
+    margin-bottom: 40px;
+  }
+  .hero-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .hero-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 1px solid var(--border-md);
+    color: var(--text-dim);
+  }
+  .hero-ctas { display: flex; gap: 12px; }
+
+  .hero-scroll {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 72px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .hero-scroll-line {
+    width: 40px; height: 1px;
+    background: linear-gradient(to right, var(--red), transparent);
+    animation: slide 2s ease-in-out infinite;
+  }
+  @keyframes slide {
+    0%,100% { transform: scaleX(1); opacity: 0.5; }
+    50%      { transform: scaleX(1.4); opacity: 1; }
+  }
+
+  /* ── ABORDAGEM ──────────────────────────── */
+  #abordagem {
+    background: var(--gray-1);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .approach-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border-md);
+  }
+  .a-card {
+    padding: 52px 44px;
+    background: var(--gray-1);
+    position: relative;
+    transition: background 0.3s;
+  }
+  .a-card:hover { background: var(--white); }
+  .a-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--red);
+    transition: width 0.4s var(--ease);
+  }
+  .a-card:hover::before { width: 100%; }
+
+  .a-num {
+    font-family: var(--serif);
+    font-size: 80px;
+    font-weight: 300;
+    color: rgba(200,16,46,0.07);
+    line-height: 1;
+    margin-bottom: 24px;
+    transition: color 0.3s;
+  }
+  .a-card:hover .a-num { color: rgba(200,16,46,0.13); }
+
+  .a-icon { width: 38px; height: 38px; color: var(--red); margin-bottom: 20px; }
+
+  .a-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+  .a-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-bottom: 28px;
+  }
+  .a-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip-sm {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border: 1px solid var(--border-md);
+    color: var(--text-muted);
+  }
+
+  /* ── BENEFÍCIOS ────────────────────────────── */
+  #beneficios {
+    background: var(--gray-2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .benefits-dark {
+    background: var(--black);
+    padding: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .benefits-dark::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--red), transparent 60%);
+  }
+
+  .benefits-dark .s-num  { color: var(--red); }
+  .benefits-dark .s-rule { background: var(--red); }
+  .benefits-dark .s-lbl  { color: #666; }
+  .benefits-dark .s-title { color: #EDE9E3; margin-bottom: 0; font-weight: 600; }
+
+  .benefits-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+    margin-bottom: 72px;
+  }
+  .benefits-lead {
+    font-size: 16px;
+    color: #888880;
+    line-height: 1.75;
+  }
+
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 3px;
+  }
+  .flow-node {
+    padding: 40px 32px;
+    background: #161616;
+    border: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+  }
+  .flow-node.accent { border-color: rgba(200,16,46,0.3); background: rgba(200,16,46,0.05); }
+
+  .fn-step {
+    font-size: 10px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--red); margin-bottom: 14px;
+  }
+  .fn-icon { font-size: 26px; display: block; margin-bottom: 14px; }
+  .fn-title { font-family: var(--serif); font-size: 22px; font-weight: 500; color: #EDE9E3; margin-bottom: 10px; }
+  .fn-desc { font-size: 13px; color: #7A7670; line-height: 1.65; }
+
+  .flow-arrow {
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 4px; color: var(--red);
+  }
+  .flow-arrow svg { width: 32px; height: 32px; }
+
+  .b-stats {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 3px;
+  }
+  .b-stat {
+    padding: 44px 40px;
+    text-align: center;
+  }
+  .b-stat:nth-child(1) { background: var(--red); }
+  .b-stat:nth-child(2) { background: rgba(200,16,46,0.12); border: 1px solid rgba(200,16,46,0.25); }
+  .b-stat:nth-child(3) { background: #161616; border: 1px solid rgba(255,255,255,0.06); }
+
+  .b-val {
+    font-family: var(--serif); font-size: 60px;
+    font-weight: 600; line-height: 1; margin-bottom: 10px;
+    color: #fff;
+  }
+  .b-stat:nth-child(2) .b-val,
+  .b-stat:nth-child(3) .b-val { color: var(--red); }
+
+  .b-lbl {
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; color: rgba(255,255,255,0.55); line-height: 1.5;
+  }
+  .b-stat:nth-child(2) .b-lbl,
+  .b-stat:nth-child(3) .b-lbl { color: #666; }
+
+  /* ── PROJETOS ──────────────────────────────── */
+  #projetos {
+    background: var(--gray-3);
+    border-top: 1px solid var(--border);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 3px;
+    background: rgba(17,17,17,0.14);
+  }
+
+  .p-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    cursor: pointer;
+    background: var(--gray-3);
+  }
+  .p-card:nth-child(1) { grid-column: 1/6;  grid-row: 1; min-height: 380px; }
+  .p-card:nth-child(2) { grid-column: 6/10; grid-row: 1; }
+  .p-card:nth-child(3) { grid-column: 10/13;grid-row: 1; }
+  .p-card:nth-child(4) { grid-column: 1/5;  grid-row: 2; }
+  .p-card:nth-child(5) { grid-column: 5/9;  grid-row: 2; }
+  .p-card:nth-child(6) { grid-column: 9/13; grid-row: 2; min-height: 380px; }
+
+  .p-card:nth-child(1) { background: #1A1008; }
+  .p-card:nth-child(2) { background: #0D1A12; }
+  .p-card:nth-child(3) { background: #1A0A12; }
+  .p-card:nth-child(4) { background: #0A101A; }
+  .p-card:nth-child(5) { background: #1A1208; }
+  .p-card:nth-child(6) { background: #0E1A0A; }
+
+  .p-inner {
+    position: absolute; inset: 0;
+    transition: transform 0.6s var(--ease);
+  }
+  .p-card:hover .p-inner { transform: scale(1.03); }
+
+  .p-card:nth-child(1) .p-inner::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 50% at 65% 30%, rgba(200,80,20,0.15) 0%, transparent 70%); }
+  .p-card:nth-child(2) .p-inner::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 50% at 30% 50%, rgba(20,120,60,0.12) 0%, transparent 70%); }
+  .p-card:nth-child(3) .p-inner::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 50% at 60% 40%, rgba(120,20,80,0.12) 0%, transparent 70%); }
+  .p-card:nth-child(4) .p-inner::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 50% at 40% 60%, rgba(20,60,120,0.12) 0%, transparent 70%); }
+  .p-card:nth-child(5) .p-inner::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 50% at 50% 40%, rgba(180,100,20,0.12) 0%, transparent 70%); }
+  .p-card:nth-child(6) .p-inner::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 50% at 40% 70%, rgba(40,100,40,0.12) 0%, transparent 70%); }
+
+  .p-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(8,8,8,0.96) 0%, rgba(8,8,8,0.2) 50%, transparent 100%);
+  }
+  .p-border {
+    position: absolute; inset: 0;
+    border: 2px solid transparent;
+    pointer-events: none;
+    transition: border-color 0.3s;
+    z-index: 3;
+  }
+  .p-card:hover .p-border { border-color: var(--red); }
+
+  .p-deco {
+    position: absolute; top: 16px; right: 20px;
+    font-family: var(--serif); font-size: 100px;
+    font-weight: 300; color: rgba(255,255,255,0.03);
+    line-height: 1; pointer-events: none; z-index: 1;
+  }
+  .p-content {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 28px; z-index: 2;
+  }
+  .p-cat {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--red); margin-bottom: 10px;
+  }
+  .p-title {
+    font-family: var(--serif); font-size: 22px; font-weight: 500;
+    color: #EDE9E3; line-height: 1.2; margin-bottom: 10px;
+  }
+  .p-desc {
+    font-size: 13px; color: #8A8680; line-height: 1.6;
+    max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height 0.4s var(--ease), opacity 0.4s;
+  }
+  .p-card:hover .p-desc { max-height: 80px; opacity: 1; }
+
+  .p-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; color: var(--red);
+    margin-top: 14px; opacity: 0; transform: translateX(-10px);
+    transition: opacity 0.3s, transform 0.3s; text-decoration: none;
+  }
+  .p-card:hover .p-cta { opacity: 1; transform: translateX(0); }
+  .p-card:hover .p-hover-img { opacity: 1 !important; }
+
+  /* ── PROJETOS APROVADOS CTA ─────────────────── */
+  #aprovados-cta {
+    background: var(--red);
+    padding: 64px 80px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 0;
+  }
+  .aprovados-text h3 {
+    font-family: var(--serif); font-size: 28px;
+    font-weight: 600; color: #fff;
+    margin-bottom: 8px; line-height: 1.2;
+  }
+  .aprovados-text p {
+    font-size: 15px; color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+  }
+  .aprovados-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 32px;
+    background: #fff; color: var(--red);
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    text-decoration: none; white-space: nowrap;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .aprovados-btn:hover {
+    background: var(--gray-1);
+    transform: translateY(-2px);
+  }
+
+  /* ── ESG / ACERVO ───────────────────────────── */
+  #esg {
+    display: flex;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+  .esg-text {
+    flex: 0 0 56%;
+    padding: 112px 80px;
+    background: var(--gray-2);
+  }
+  .esg-visual {
+    flex: 1;
+    background: var(--gray-3);
+    position: relative;
+    overflow: hidden;
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .esg-visual::before {
+    content: '';
+    position: absolute; inset: 48px;
+    border: 1px solid rgba(17,17,17,0.06);
+  }
+  .esg-visual::after {
+    content: '';
+    position: absolute; inset: 72px;
+    border: 1px solid rgba(200,16,46,0.1);
+  }
+  .esg-word {
+    font-family: var(--serif); font-size: 90px;
+    font-weight: 300; color: rgba(17,17,17,0.06);
+    text-align: center; line-height: 1.1; z-index: 1; position: relative;
+  }
+
+  .esg-quote {
+    border-left: 2px solid var(--red);
+    padding-left: 24px; margin: 36px 0;
+  }
+  .esg-quote p {
+    font-family: var(--serif); font-size: 22px; font-weight: 500;
+    font-style: italic; color: var(--text); line-height: 1.5;
+  }
+  .esg-body {
+    font-size: 16px; color: var(--text-dim);
+    line-height: 1.8; margin-bottom: 36px;
+  }
+  .esg-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 44px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 8px 16px; border: 1px solid var(--border-md);
+    font-size: 12px; color: var(--text-dim);
+    background: rgba(255,255,255,0.5);
+  }
+  .pill::before {
+    content: ''; width: 5px; height: 5px;
+    background: var(--red); border-radius: 50%; flex-shrink: 0;
+  }
+
+  /* Home responsive */
+  @media (max-width: 1100px) {
+    #hero { padding: 120px 48px 80px; }
+    .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+    .hero-right { padding: 0; }
+    .approach-grid { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr; }
+    .flow-arrow { transform: rotate(90deg); justify-self: center; }
+    .benefits-dark { padding: 56px 48px; }
+    .benefits-header { grid-template-columns: 1fr; gap: 24px; }
+    .esg-text { padding: 80px 48px; }
+    #aprovados-cta { padding: 48px; }
+  }
+  @media (max-width: 768px) {
+    #aprovados-cta { padding: 40px 24px; grid-template-columns: 1fr; }
+    #hero { padding: 100px 24px 60px; }
+    .projects-grid { display: flex; flex-direction: column; }
+    .p-card { min-height: 240px !important; }
+    #esg { flex-direction: column; }
+    .esg-text { padding: 60px 24px; flex: none; }
+    .esg-visual { min-height: 280px; }
+    .b-stats { grid-template-columns: 1fr; }
+    .benefits-dark { padding: 40px 24px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <!-- ── HERO ──────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-inner">
+      <div class="reveal">
+        <div class="hero-eyebrow">Produtora Cultural Multimídia</div>
+        <h1 class="hero-h1">
+          Transformamos ideias<br>
+          em projetos de<br>
+          <em>impacto cultural.</em>
+        </h1>
+        <div class="hero-scroll">
+          <div class="hero-scroll-line"></div>
+          <span>Scroll para explorar</span>
+        </div>
+      </div>
+
+      <div class="hero-right reveal" style="transition-delay:.12s">
+        <p class="hero-sub">Da concepção à entrega — audiovisual, editorial e educacional com rigor criativo e impacto real para marcas, instituições e sociedade.</p>
+        <div class="hero-tags">
+          <span class="hero-tag">Audiovisual</span>
+          <span class="hero-tag">Editorial</span>
+          <span class="hero-tag">Educacional</span>
+          <span class="hero-tag">Leis de Incentivo</span>
+        </div>
+        <div class="hero-ctas">
+          <a href="{% url 'core:projetos' %}" class="btn btn-black">Nossos Projetos</a>
+          <a href="#abordagem" class="btn btn-outline">Saiba mais</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABORDAGEM ─────────────────────────────── -->
+  <section id="abordagem" class="section">
+    <div class="s-tag reveal"><span class="s-num">01</span><span class="s-rule"></span><span class="s-lbl">Abordagem</span></div>
+    <h2 class="s-title reveal">Como trabalhamos.</h2>
+    <p class="s-lead reveal">Da concepção à entrega — projetos com rigor criativo, domínio técnico e alinhamento estratégico para marcas e instituições.</p>
+
+    <div class="approach-grid reveal" style="transition-delay:.1s">
+      <div class="a-card">
+        <div class="a-num">01</div>
+        <svg class="a-icon" viewBox="0 0 40 40" fill="none">
+          <rect x="4" y="12" width="32" height="22" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M4 18h32" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="20" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M20 9v3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M14 26h12" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M17 30h6" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <h3 class="a-title">Projetos Incentivados</h3>
+        <p class="a-desc">Captação e produção via leis de incentivo fiscal. Estruturamos projetos de alto impacto cultural que conectam marcas a causas relevantes com benefício tributário máximo.</p>
+        <div class="a-tags">
+          <span class="chip-sm">Lei Rouanet</span>
+          <span class="chip-sm">Lei do Audiovisual</span>
+          <span class="chip-sm">Cultura Viva</span>
+          <span class="chip-sm">ProAC</span>
+        </div>
+      </div>
+
+      <div class="a-card">
+        <div class="a-num">02</div>
+        <svg class="a-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M6 20h28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="4" y="8" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="22" y="22" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="11" cy="13" r="2" fill="currentColor" opacity=".4"/>
+          <circle cx="29" cy="27" r="2" fill="currentColor" opacity=".4"/>
+        </svg>
+        <h3 class="a-title">Projetos Não Incentivados</h3>
+        <p class="a-desc">Produção direta para marcas, empresas e instituições. Conteúdo sob medida para comunicação institucional, campanhas e narrativas corporativas.</p>
+        <div class="a-tags">
+          <span class="chip-sm">Branded Content</span>
+          <span class="chip-sm">Documentários</span>
+          <span class="chip-sm">Vídeo Institucional</span>
+        </div>
+      </div>
+
+      <div class="a-card">
+        <div class="a-num">03</div>
+        <svg class="a-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M8 32V10a2 2 0 012-2h20a2 2 0 012 2v22" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M5 32h30" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M16 32V20h8v12" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M14 14h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M14 18h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h3 class="a-title">Conteúdo Educacional</h3>
+        <p class="a-desc">Desenvolvimento de plataformas, livros, documentários e materiais que transformam conhecimento em experiência transformadora e duradoura.</p>
+        <div class="a-tags">
+          <span class="chip-sm">Plataformas</span>
+          <span class="chip-sm">Livros</span>
+          <span class="chip-sm">E-learning</span>
+          <span class="chip-sm">Documentários</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BENEFÍCIOS ────────────────────────────── -->
+  <section id="beneficios" class="section" style="padding: 112px 80px;">
+    <div class="benefits-dark reveal">
+      <div class="benefits-header">
+        <div>
+          <div class="s-tag"><span class="s-num">02</span><span class="s-rule"></span><span class="s-lbl" style="color:#555">Leis de Incentivo</span></div>
+          <h2 class="s-title" style="color:#EDE9E3; margin-bottom:0">O caminho do<br>incentivo fiscal.</h2>
+        </div>
+        <p class="benefits-lead">As leis de incentivo à cultura permitem que empresas financiem projetos de alto valor com abatimento direto no Imposto de Renda — transformando obrigação fiscal em impacto real.</p>
+      </div>
+
+      <div class="flow">
+        <div class="flow-node">
+          <span class="fn-step">Ponto de Partida</span>
+          <span class="fn-icon">🏛</span>
+          <h3 class="fn-title">Empresa Patrocinadora</h3>
+          <p class="fn-desc">Destina parte do IR devido a um projeto cultural aprovado pelo MinC. Sem custo adicional sobre o orçamento.</p>
+        </div>
+        <div class="flow-arrow">
+          <svg viewBox="0 0 32 24" fill="none">
+            <path d="M2 12H29M21 4L29 12L21 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+        </div>
+        <div class="flow-node accent">
+          <span class="fn-step">Execução</span>
+          <span class="fn-icon">🎬</span>
+          <h3 class="fn-title">Projeto Cultural</h3>
+          <p class="fn-desc">A Mester desenvolve, produz e entrega o projeto com excelência criativa e gestão profissional de ponta a ponta.</p>
+        </div>
+        <div class="flow-arrow">
+          <svg viewBox="0 0 32 24" fill="none">
+            <path d="M2 12H29M21 4L29 12L21 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+        </div>
+        <div class="flow-node">
+          <span class="fn-step">Resultado</span>
+          <span class="fn-icon">✦</span>
+          <h3 class="fn-title">Impacto + Dedução Fiscal</h3>
+          <p class="fn-desc">A empresa ganha visibilidade, associação a valores culturais e deduz até 100% do investimento no IR declarado.</p>
+        </div>
+      </div>
+
+      <div class="b-stats" style="margin-top:3px">
+        <div class="b-stat">
+          <div class="b-val">100%</div>
+          <div class="b-lbl">Dedutível do Imposto de Renda</div>
+        </div>
+        <div class="b-stat">
+          <div class="b-val">↗</div>
+          <div class="b-lbl">Visibilidade de marca associada à cultura</div>
+        </div>
+        <div class="b-stat">
+          <div class="b-val">ESG</div>
+          <div class="b-lbl">Impacto social e cultural mensurável</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROJETOS ──────────────────────────────── -->
+  <section id="projetos" class="section">
+    <div class="s-tag reveal"><span class="s-num">03</span><span class="s-rule"></span><span class="s-lbl">Portfolio</span></div>
+    <h2 class="s-title reveal">Cases.</h2>
+    <p class="s-lead reveal">Projetos que transformaram ideias em linguagem, memória e impacto cultural duradouro.</p>
+
+    <div class="projects-grid reveal" style="transition-delay:.1s">
+      <div class="p-card" onclick="window.location.href='{% url 'core:audiovisual' %}'">
+        <div class="p-inner">
+          {% if video_destaque and video_destaque.thumbnail %}
+            <img src="{{ video_destaque.thumbnail.url }}" alt="{{ video_destaque.titulo }}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0;transition:opacity 0.5s var(--ease);" class="p-hover-img">
+          {% endif %}
+        </div>
+        <div class="p-overlay"></div>
+        <div class="p-border"></div>
+        <div class="p-deco">I</div>
+        <div class="p-content">
+          <span class="p-cat">Audiovisual</span>
+          <h3 class="p-title">Culinária e Artesanato — Baía de Todos os Santos</h3>
+          <p class="p-desc">Documentário que explora a riqueza cultural, culinária e artesanal da região da Baía de Todos os Santos.</p>
+          <a href="{% url 'core:audiovisual' %}" class="p-cta">Assistir →</a>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-inner"></div>
+        <div class="p-overlay"></div>
+        <div class="p-border"></div>
+        <div class="p-deco">II</div>
+        <div class="p-content">
+          <span class="p-cat">Editorial</span>
+          <h3 class="p-title">Acervo Fotográfico Nacional</h3>
+          <p class="p-desc">Livro de arte com distribuição para museus e bibliotecas públicas em todo o Brasil.</p>
+          <a href="#" class="p-cta">Ver projeto →</a>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-inner"></div>
+        <div class="p-overlay"></div>
+        <div class="p-border"></div>
+        <div class="p-deco">III</div>
+        <div class="p-content">
+          <span class="p-cat">Educacional</span>
+          <h3 class="p-title">Plataforma de Ensino Criativo</h3>
+          <p class="p-desc">Ecossistema digital de educação audiovisual para jovens criadores.</p>
+          <a href="#" class="p-cta">Ver projeto →</a>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-inner"></div>
+        <div class="p-overlay"></div>
+        <div class="p-border"></div>
+        <div class="p-deco">IV</div>
+        <div class="p-content">
+          <span class="p-cat">Documentário</span>
+          <h3 class="p-title">Memória Viva</h3>
+          <p class="p-desc">Preservação de tradições em risco de desaparecimento através de linguagem audiovisual contemporânea.</p>
+          <a href="#" class="p-cta">Ver projeto →</a>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-inner"></div>
+        <div class="p-overlay"></div>
+        <div class="p-border"></div>
+        <div class="p-deco">V</div>
+        <div class="p-content">
+          <span class="p-cat">Branded Content</span>
+          <h3 class="p-title">Território e Identidade</h3>
+          <p class="p-desc">Série sobre diversidade cultural das regiões brasileiras para plataforma de streaming.</p>
+          <a href="#" class="p-cta">Ver projeto →</a>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-inner"></div>
+        <div class="p-overlay"></div>
+        <div class="p-border"></div>
+        <div class="p-deco">VI</div>
+        <div class="p-content">
+          <span class="p-cat">ESG</span>
+          <h3 class="p-title">Relatório de Impacto Cultural</h3>
+          <p class="p-desc">Produção audiovisual e editorial de relatório de impacto para empresa do setor de energia.</p>
+          <a href="#" class="p-cta">Ver projeto →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROJETOS APROVADOS CTA ────────────────── -->
+  <div style="background: var(--gray-1); padding-bottom: 56px;">
+    <section id="aprovados-cta" class="reveal">
+      <div class="aprovados-text">
+        <h3>12 projetos já aprovados, prontos para patrocínio.</h3>
+        <p>A Mester dispõe de documentários e livros de arte com aprovação no Art. 18 da Lei Rouanet. Sua empresa pode investir em cultura com dedução de até 100% do IR.</p>
+      </div>
+      <a href="{% url 'core:projetos' %}" class="aprovados-btn">Ver Projetos →</a>
+    </section>
+  </div>
+
+  <!-- ── ESG / ACERVO ──────────────────────────── -->
+  <section id="esg">
+    <div class="esg-text reveal">
+      <div class="s-tag"><span class="s-num">04</span><span class="s-rule"></span><span class="s-lbl">ESG / Acervo</span></div>
+      <h2 class="s-title">Conteúdo com<br><em>propósito.</em></h2>
+      <blockquote class="esg-quote">
+        <p>"Projetos que geram cultura não deveriam ficar restritos a quem os financiou."</p>
+      </blockquote>
+      <p class="esg-body">Nossa plataforma ESG disponibiliza gratuitamente o conteúdo multimídia dos projetos realizados — documentários, fotografias, publicações e ensaios visuais — para acesso livre de educadores, pesquisadores e do público em geral.</p>
+      <div class="esg-pills">
+        <span class="pill">Documentários gratuitos</span>
+        <span class="pill">Fotografias em alta resolução</span>
+        <span class="pill">Publicações digitais</span>
+        <span class="pill">Ensaios visuais</span>
+        <span class="pill">Mapas interativos</span>
+      </div>
+      <a href="#" class="btn btn-red">Explorar Acervo</a>
+    </div>
+    <div class="esg-visual">
+      <div class="esg-word">ESG<br>Acervo</div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  setTimeout(() => {
+    document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
+  }, 100);
+</script>
+{% endblock %}

@@ -1,0 +1,476 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Quem Somos — Mester Comunicação{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── HERO SECTION ─────────────────────────── */
+  #page-quem-somos {
+    padding: 140px 80px 112px;
+    background: var(--gray-1);
+    border-bottom: 1px solid var(--border);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 100px;
+    align-items: start;
+    max-width: 1280px;
+  }
+  .about-body p {
+    font-size: 17px; color: var(--text-dim);
+    line-height: 1.85; margin-bottom: 24px;
+  }
+  .about-body strong { color: var(--text); }
+  .pullquote {
+    border-left: 2px solid var(--red);
+    padding-left: 26px; margin: 44px 0;
+  }
+  .pullquote p {
+    font-family: var(--serif); font-size: 26px;
+    font-weight: 500; color: var(--text);
+    line-height: 1.4; font-style: italic;
+  }
+  .about-nums {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 1px;
+    background: var(--border-md);
+    margin-top: 52px;
+  }
+  .about-num {
+    padding: 28px 24px;
+    background: var(--gray-1);
+  }
+  .an-val {
+    font-family: var(--serif); font-size: 44px;
+    font-weight: 600; color: var(--red);
+    line-height: 1; margin-bottom: 8px;
+  }
+  .an-lbl { font-size: 12px; color: var(--text-muted); }
+  .about-portrait { position: sticky; top: 116px; }
+  .portrait-frame {
+    position: relative;
+    aspect-ratio: 3/4;
+    background: var(--gray-2);
+    overflow: hidden;
+    border: 1px solid var(--border-md);
+  }
+  .portrait-frame::after {
+    content: '';
+    position: absolute; bottom: 0; right: 0;
+    width: 56px; height: 56px;
+    border-right: 2px solid var(--red);
+    border-bottom: 2px solid var(--red);
+  }
+  .portrait-placeholder {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .portrait-initials {
+    font-family: var(--serif); font-size: 110px;
+    font-weight: 300; color: rgba(17,17,17,0.07); line-height: 1;
+  }
+  .portrait-caption { margin-top: 18px; }
+  .portrait-name {
+    font-family: var(--serif); font-size: 20px; font-weight: 500;
+    color: var(--text); margin-bottom: 4px;
+  }
+  .portrait-role {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+
+  /* ── O QUE FAZEMOS ────────────────────────── */
+  #oque-fazemos {
+    padding: 112px 80px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+  .services-intro {
+    max-width: 720px;
+    margin-bottom: 64px;
+  }
+  .services-intro p {
+    font-size: 17px; color: var(--text-dim);
+    line-height: 1.85; margin-top: 20px;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border-md);
+    max-width: 1280px;
+  }
+  .service-card {
+    background: var(--white);
+    padding: 44px 36px;
+    position: relative;
+    transition: background 0.3s var(--ease);
+  }
+  .service-card:hover {
+    background: var(--gray-1);
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--red);
+    transition: width 0.4s var(--ease);
+  }
+  .service-card:hover::before {
+    width: 100%;
+  }
+  .service-icon {
+    font-size: 28px;
+    margin-bottom: 20px;
+    width: 52px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--red-light);
+    color: var(--red);
+    border-radius: 4px;
+  }
+  .service-card h3 {
+    font-family: var(--serif);
+    font-size: 22px; font-weight: 600;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .service-card p {
+    font-size: 14px; color: var(--text-dim);
+    line-height: 1.75;
+  }
+
+  /* ── CLIENTES ─────────────────────────────── */
+  #clientes {
+    padding: 112px 80px;
+    background: var(--gray-1);
+    border-bottom: 1px solid var(--border);
+  }
+  .clientes-intro {
+    max-width: 720px;
+    margin-bottom: 56px;
+  }
+  .clientes-intro p {
+    font-size: 17px; color: var(--text-dim);
+    line-height: 1.85; margin-top: 20px;
+  }
+  .clientes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border-md);
+    max-width: 1280px;
+  }
+  .cliente-item {
+    background: var(--gray-1);
+    padding: 28px 24px;
+    display: flex; align-items: center; gap: 14px;
+    transition: background 0.3s var(--ease);
+  }
+  .cliente-item:hover {
+    background: var(--white);
+  }
+  .cliente-dot {
+    width: 8px; height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .cliente-name {
+    font-size: 15px; font-weight: 500;
+    color: var(--text);
+  }
+  .cliente-tipo {
+    font-size: 11px; color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── METODOLOGIA ──────────────────────────── */
+  #metodologia {
+    padding: 112px 80px;
+    background: var(--black);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  #metodologia .s-tag .s-num,
+  #metodologia .s-tag .s-lbl {
+    color: rgba(255,255,255,0.5);
+  }
+  #metodologia .s-tag .s-rule {
+    background: rgba(255,255,255,0.2);
+  }
+  #metodologia .s-title {
+    color: var(--white);
+  }
+  .metodo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.08);
+    max-width: 1280px;
+    margin-top: 56px;
+  }
+  .metodo-step {
+    background: var(--black);
+    padding: 40px 32px;
+    position: relative;
+  }
+  .metodo-num {
+    font-family: var(--serif);
+    font-size: 48px; font-weight: 300;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+  .metodo-step h3 {
+    font-family: var(--serif);
+    font-size: 20px; font-weight: 500;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .metodo-step p {
+    font-size: 13px; color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+  }
+
+  /* ── RESPONSIVE ───────────────────────────── */
+  @media (max-width: 1100px) {
+    #page-quem-somos { padding: 120px 48px 80px; }
+    .about-grid { grid-template-columns: 1fr; gap: 56px; }
+    .about-portrait { position: static; }
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .metodo-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    #page-quem-somos { padding: 100px 24px 60px; }
+    #oque-fazemos { padding: 80px 24px; }
+    #clientes { padding: 80px 24px; }
+    #metodologia { padding: 80px 24px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .metodo-grid { grid-template-columns: 1fr; }
+    .clientes-grid { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <main id="page-quem-somos">
+    <div class="s-tag reveal"><span class="s-num">05</span><span class="s-rule"></span><span class="s-lbl">Quem Somos</span></div>
+    <h1 class="s-title reveal">A produtora por trás<br>das histórias.</h1>
+
+    <div class="about-grid">
+      <div class="about-body reveal">
+        <p>A <strong>Mester</strong> é uma produtora de conteúdo multimídia criada com o propósito de unir criatividade, rigor técnico e impacto cultural. Atuamos nas áreas audiovisual, editorial e educacional — desenvolvendo projetos que geram valor real para marcas, instituições e para a sociedade.</p>
+        <blockquote class="pullquote">
+          <p>"Communicating to educate and entertain — essa é nossa bússola criativa desde o primeiro projeto."</p>
+        </blockquote>
+        <p>Nossa expertise em <strong>leis de incentivo à cultura</strong> permite estruturar projetos robustos que atendem às demandas das empresas patrocinadoras e aos critérios dos editais públicos — do ProAC à Lei Rouanet, passando pela Lei do Audiovisual.</p>
+        <p>Uma equipe multidisciplinar de diretores, produtores, pesquisadores e designers comprometidos com a excelência em cada etapa — da concepção ao lançamento.</p>
+        <div class="about-nums">
+          <div class="about-num">
+            <div class="an-val">+30</div>
+            <div class="an-lbl">Projetos realizados</div>
+          </div>
+          <div class="about-num">
+            <div class="an-val">15+</div>
+            <div class="an-lbl">Anos de experiência</div>
+          </div>
+          <div class="about-num">
+            <div class="an-val">5</div>
+            <div class="an-lbl">Áreas de atuação</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-portrait reveal" style="transition-delay:.15s">
+        <div class="portrait-frame">
+          <div class="portrait-placeholder">
+            <div class="portrait-initials">CB</div>
+          </div>
+        </div>
+        <div class="portrait-caption">
+          <div class="portrait-name">Cristiano Burmester</div>
+          <div class="portrait-role">Diretor Criativo &amp; Fundador</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── O QUE FAZEMOS ──────────────────────── -->
+  <section id="oque-fazemos">
+    <div class="s-tag reveal"><span class="s-num">06</span><span class="s-rule"></span><span class="s-lbl">O Que Fazemos</span></div>
+    <div class="services-intro reveal">
+      <h2 class="s-title">Comunicação com olhar<br>profundo e amplo.</h2>
+      <p>Utilizamos as mais atuais ferramentas de marketing e comunicação, aplicando uma metodologia de análise, pesquisa e desenvolvimento para atingir resultados adequados para cada projeto. Atendemos clientes das áreas privada e governamental.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Identidade Visual & Branding</h3>
+        <p>Criação e renovação de logomarcas e sistemas de identidade visual completos para instituições e empresas.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <h3>Web Design</h3>
+        <p>Criação e renovação de sites institucionais e portais, com foco em usabilidade e comunicação digital eficiente.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        </div>
+        <h3>Produção Audiovisual</h3>
+        <p>Documentários, vídeos institucionais e mapeamento audiovisual de comunidades e áreas de preservação ambiental.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        </div>
+        <h3>Livros & Publicações</h3>
+        <p>Livros fotográficos, publicações culturais e científicas com design editorial de alta qualidade.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <h3>Design Editorial</h3>
+        <p>Revistas científicas, jornais educativos, folders e materiais gráficos promocionais com rigor editorial.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 2v20"/><path d="M17 2v20"/><path d="M2 12h20"/><path d="M2 7h5"/><path d="M2 17h5"/><path d="M17 7h5"/><path d="M17 17h5"/></svg>
+        </div>
+        <h3>Material Gráfico</h3>
+        <p>Papelaria corporativa, cartazes, banners, calendários e material promocional para eventos e campanhas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CLIENTES ────────────────────────────── -->
+  <section id="clientes">
+    <div class="s-tag reveal"><span class="s-num">07</span><span class="s-rule"></span><span class="s-lbl">Clientes</span></div>
+    <div class="clientes-intro reveal">
+      <h2 class="s-title">Quem confia no<br>nosso trabalho.</h2>
+      <p>Ao longo dos anos, a Mester construiu parcerias sólidas com instituições de ensino, empresas e organizações do terceiro setor, sempre com o compromisso de entregar comunicação com qualidade e impacto.</p>
+    </div>
+    <div class="clientes-grid">
+      <div class="cliente-item reveal">
+        <span class="cliente-dot"></span>
+        <div>
+          <div class="cliente-name">Estação Ciência</div>
+          <div class="cliente-tipo">Universidade de São Paulo</div>
+        </div>
+      </div>
+      <div class="cliente-item reveal">
+        <span class="cliente-dot"></span>
+        <div>
+          <div class="cliente-name">Instituto Oceanográfico</div>
+          <div class="cliente-tipo">Universidade de São Paulo</div>
+        </div>
+      </div>
+      <div class="cliente-item reveal">
+        <span class="cliente-dot"></span>
+        <div>
+          <div class="cliente-name">SABESP</div>
+          <div class="cliente-tipo">Saneamento</div>
+        </div>
+      </div>
+      <div class="cliente-item reveal">
+        <span class="cliente-dot"></span>
+        <div>
+          <div class="cliente-name">MAERSK</div>
+          <div class="cliente-tipo">Logística & Navegação</div>
+        </div>
+      </div>
+      <div class="cliente-item reveal">
+        <span class="cliente-dot"></span>
+        <div>
+          <div class="cliente-name">PROMAR</div>
+          <div class="cliente-tipo">Meio Ambiente</div>
+        </div>
+      </div>
+      <div class="cliente-item reveal">
+        <span class="cliente-dot"></span>
+        <div>
+          <div class="cliente-name">PAICHE</div>
+          <div class="cliente-tipo">Documentários</div>
+        </div>
+      </div>
+      <div class="cliente-item reveal">
+        <span class="cliente-dot"></span>
+        <div>
+          <div class="cliente-name">Simonsen & Wehba</div>
+          <div class="cliente-tipo">Advogados Associados</div>
+        </div>
+      </div>
+      <div class="cliente-item reveal">
+        <span class="cliente-dot"></span>
+        <div>
+          <div class="cliente-name">Bureau Brasil de Ecoturismo</div>
+          <div class="cliente-tipo">Turismo & Meio Ambiente</div>
+        </div>
+      </div>
+      <div class="cliente-item reveal">
+        <span class="cliente-dot"></span>
+        <div>
+          <div class="cliente-name">Terra Nativa</div>
+          <div class="cliente-tipo">Ecoturismo</div>
+        </div>
+      </div>
+      <div class="cliente-item reveal">
+        <span class="cliente-dot"></span>
+        <div>
+          <div class="cliente-name">Plugados na Educação</div>
+          <div class="cliente-tipo">Educação & Terceiro Setor</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── METODOLOGIA ─────────────────────────── -->
+  <section id="metodologia">
+    <div class="s-tag reveal"><span class="s-num">08</span><span class="s-rule"></span><span class="s-lbl">Metodologia</span></div>
+    <h2 class="s-title reveal">Como trabalhamos.</h2>
+    <div class="metodo-grid">
+      <div class="metodo-step reveal">
+        <div class="metodo-num">01</div>
+        <h3>Análise</h3>
+        <p>Olhar profundo e amplo sobre as necessidades do cliente, compreendendo contexto, mercado e objetivos.</p>
+      </div>
+      <div class="metodo-step reveal">
+        <div class="metodo-num">02</div>
+        <h3>Pesquisa</h3>
+        <p>Investigação de referências, público-alvo e ferramentas de marketing e comunicação mais adequadas ao projeto.</p>
+      </div>
+      <div class="metodo-step reveal">
+        <div class="metodo-num">03</div>
+        <h3>Desenvolvimento</h3>
+        <p>Criação de soluções criativas e consistentes que unem rigor técnico à narrativa cultural e institucional.</p>
+      </div>
+      <div class="metodo-step reveal">
+        <div class="metodo-num">04</div>
+        <h3>Resultado</h3>
+        <p>Entrega de projetos que consolidam relacionamentos e geram impacto real para marcas e instituições.</p>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+{% endblock %}

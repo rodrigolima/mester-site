@@ -1,0 +1,112 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Contato — Mester Comunicação{% endblock %}
+
+{% block extra_css %}
+<style>
+  #page-contato {
+    padding: 140px 80px 112px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  #page-contato::after {
+    content: 'MESTER';
+    position: absolute; bottom: -40px; right: -10px;
+    font-family: var(--serif); font-size: 220px;
+    font-weight: 600; color: rgba(17,17,17,0.025);
+    pointer-events: none; line-height: 1;
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: start;
+    max-width: 1200px;
+  }
+  .contact-hl {
+    font-family: var(--serif); font-weight: 600;
+    font-size: clamp(36px, 4vw, 56px);
+    line-height: 1.1; color: var(--text); margin-bottom: 28px;
+  }
+  .contact-hl em { font-style: italic; color: var(--red); font-weight: 500; }
+  .contact-email {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: 15px; color: var(--red);
+    text-decoration: none; font-weight: 500;
+    margin-bottom: 40px; transition: gap 0.22s;
+  }
+  .contact-email::before {
+    content: ''; width: 28px; height: 1px;
+    background: var(--red); flex-shrink: 0;
+  }
+  .contact-email:hover { gap: 18px; }
+  .contact-sub { font-size: 14px; color: var(--text-muted); line-height: 1.75; }
+  .form-field { margin-bottom: 20px; }
+  .form-lbl {
+    display: block; font-size: 10px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 10px;
+  }
+  .form-input, .form-textarea {
+    width: 100%;
+    background: var(--gray-1);
+    border: 1px solid var(--border-md);
+    padding: 15px 18px; color: var(--text);
+    font-family: var(--sans); font-size: 15px;
+    outline: none; transition: border-color 0.2s; resize: none;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--red); }
+  .form-textarea { height: 140px; line-height: 1.6; }
+  @media (max-width: 1100px) {
+    #page-contato { padding: 120px 48px 80px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 60px; }
+  }
+  @media (max-width: 768px) {
+    #page-contato { padding: 100px 24px 60px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <main id="page-contato">
+    <div class="contact-grid">
+      <div class="reveal">
+        <div class="s-tag" style="margin-bottom:44px">
+          <span class="s-num">06</span><span class="s-rule"></span><span class="s-lbl">Contato</span>
+        </div>
+        <h1 class="contact-hl">Vamos construir<br>algo relevante<br><em>juntos?</em></h1>
+        <a href="mailto:contato@mester.com.br" class="contact-email">contato@mester.com.br</a>
+        <p class="contact-sub">Para projetos incentivados, branded content, produções educacionais ou consultas sobre leis de incentivo fiscal à cultura.</p>
+      </div>
+
+      <div class="reveal" style="transition-delay:.12s">
+        <form>
+          {% csrf_token %}
+          <div class="form-field">
+            <label class="form-lbl" for="f-name">Nome</label>
+            <input class="form-input" type="text" id="f-name" placeholder="Seu nome completo">
+          </div>
+          <div class="form-field">
+            <label class="form-lbl" for="f-email">E-mail</label>
+            <input class="form-input" type="email" id="f-email" placeholder="seu@email.com">
+          </div>
+          <div class="form-field">
+            <label class="form-lbl" for="f-msg">Mensagem</label>
+            <textarea class="form-textarea" id="f-msg" placeholder="Conte-nos sobre o seu projeto..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-black" style="margin-top:6px">Enviar Mensagem</button>
+        </form>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  setTimeout(() => {
+    document.querySelectorAll('#page-contato .reveal').forEach(el => el.classList.add('in'));
+  }, 100);
+</script>
+{% endblock %}

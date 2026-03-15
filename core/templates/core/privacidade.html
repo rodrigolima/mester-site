@@ -1,0 +1,135 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Política de Privacidade — Mester Comunicação{% endblock %}
+
+{% block extra_css %}
+<style>
+  #page-privacidade {
+    padding: 140px 80px 112px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+  .privacy-inner {
+    max-width: 720px;
+  }
+  .privacy-inner h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(36px, 4vw, 52px);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .privacy-inner .lead {
+    font-size: 17px;
+    color: var(--text-dim);
+    line-height: 1.75;
+    margin-bottom: 48px;
+  }
+  .privacy-inner h2 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 40px;
+    margin-bottom: 16px;
+  }
+  .privacy-inner p, .privacy-inner li {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .privacy-inner ul {
+    margin-bottom: 24px;
+    padding-left: 24px;
+  }
+  .privacy-inner a {
+    color: var(--red);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .privacy-inner a:hover {
+    color: var(--red-dark);
+  }
+  .privacy-updated {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+  @media (max-width: 768px) {
+    #page-privacidade { padding: 100px 24px 60px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <main id="page-privacidade">
+    <div class="privacy-inner reveal">
+      <h1>Política de Privacidade</h1>
+      <p class="lead">Esta política descreve como a Mester Produções trata os dados pessoais dos visitantes e usuários deste site, em conformidade com a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).</p>
+      <p class="privacy-updated">Última atualização: 12 de março de 2026</p>
+
+      <h2>1. Identificação do controlador</h2>
+      <p>A Mester Produções é o controlador dos dados pessoais coletados através deste site, responsável pelas decisões sobre o tratamento desses dados.</p>
+
+      <h2>2. Dados que coletamos</h2>
+      <p>Podemos coletar os seguintes dados:</p>
+      <ul>
+        <li><strong>Dados de identificação:</strong> nome, e-mail, quando você preenche o formulário de contato.</li>
+        <li><strong>Dados técnicos:</strong> endereço IP, tipo de navegador, páginas visitadas e tempo de acesso — de forma automatizada.</li>
+        <li><strong>Cookies:</strong> utilizamos cookies para melhorar a experiência de navegação (veja a seção 8).</li>
+      </ul>
+
+      <h2>3. Finalidade do tratamento</h2>
+      <p>Os dados são utilizados para:</p>
+      <ul>
+        <li>Responder às mensagens enviadas pelo formulário de contato;</li>
+        <li>Melhorar o funcionamento e a segurança do site;</li>
+        <li>Cumprir obrigações legais e regulatórias.</li>
+      </ul>
+
+      <h2>4. Base legal</h2>
+      <p>O tratamento é realizado com base em:</p>
+      <ul>
+        <li><strong>Consentimento:</strong> ao enviar o formulário ou aceitar cookies;</li>
+        <li><strong>Legítimo interesse:</strong> para análise técnica e segurança do site.</li>
+      </ul>
+
+      <h2>5. Compartilhamento de dados</h2>
+      <p>Não vendemos seus dados. Podemos compartilhá-los apenas com prestadores de serviço necessários à operação do site (ex.: hospedagem) ou quando exigido por lei.</p>
+
+      <h2>6. Retenção dos dados</h2>
+      <p>Os dados são mantidos pelo tempo necessário para as finalidades descritas ou conforme determinação legal. Após esse período, são eliminados ou anonimizados.</p>
+
+      <h2>7. Seus direitos (LGPD)</h2>
+      <p>Você tem direito a:</p>
+      <ul>
+        <li>Confirmar a existência de tratamento de dados;</li>
+        <li>Acessar seus dados;</li>
+        <li>Corrigir dados incompletos ou desatualizados;</li>
+        <li>Solicitar a anonimização ou eliminação de dados;</li>
+        <li>Revogar o consentimento.</li>
+      </ul>
+      <p>Para exercer esses direitos, entre em contato conosco pelo e-mail <a href="mailto:contato@mester.com.br">contato@mester.com.br</a>.</p>
+
+      <h2 id="cookies">8. Cookies</h2>
+      <p>Utilizamos cookies essenciais para o funcionamento do site e cookies de preferência (ex.: para lembrar se você aceitou o aviso de cookies). Você pode aceitar ou recusar cookies não essenciais através do aviso exibido ao visitar o site.</p>
+
+      <h2>9. Segurança</h2>
+      <p>Adotamos medidas técnicas e organizacionais para proteger seus dados contra acesso não autorizado, alteração ou destruição.</p>
+
+      <h2>10. Contato</h2>
+      <p>Dúvidas sobre esta política? Entre em contato:</p>
+      <p><a href="mailto:contato@mester.com.br">contato@mester.com.br</a></p>
+    </div>
+  </main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  setTimeout(() => {
+    document.querySelectorAll('#page-privacidade .reveal').forEach(el => el.classList.add('in'));
+  }, 100);
+</script>
+{% endblock %}

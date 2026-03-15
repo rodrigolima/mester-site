@@ -1,0 +1,544 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Projetos Incentivados — Mester Comunicação{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── HERO ──────────────────────────────────── */
+  #projetos-hero {
+    padding: 140px 80px 80px;
+    background: var(--black);
+    position: relative;
+    overflow: hidden;
+  }
+  #projetos-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--red) 0%, transparent 50%);
+  }
+  #projetos-hero .s-tag .s-num,
+  #projetos-hero .s-tag .s-lbl { color: rgba(255,255,255,0.4); }
+  #projetos-hero .s-tag .s-rule { background: rgba(255,255,255,0.15); }
+  #projetos-hero .s-title { color: #EDE9E3; }
+  .projetos-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 80px;
+    align-items: end;
+    max-width: 1280px;
+    margin-top: 16px;
+  }
+  .projetos-hero-lead {
+    font-size: 17px; color: rgba(255,255,255,0.5);
+    line-height: 1.8;
+  }
+  .projetos-hero-lead strong { color: var(--red); }
+  .projetos-hero-stats {
+    display: flex; gap: 40px;
+    padding-top: 32px; margin-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .ph-stat-val {
+    font-family: var(--serif); font-size: 40px;
+    font-weight: 600; color: var(--red); line-height: 1;
+  }
+  .ph-stat-lbl {
+    font-size: 11px; color: rgba(255,255,255,0.4);
+    margin-top: 6px;
+  }
+  .projetos-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 20px;
+    background: rgba(200,16,46,0.08);
+    border: 1px solid rgba(200,16,46,0.2);
+    margin-bottom: 32px;
+  }
+  .projetos-badge-dot {
+    width: 8px; height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .projetos-badge-text {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--red);
+  }
+
+  /* ── CATEGORY SECTION ─────────────────────── */
+  .cat-section {
+    padding: 100px 80px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-section:nth-child(odd) { background: var(--white); }
+  .cat-section:nth-child(even) { background: var(--gray-1); }
+  .cat-header {
+    display: flex; align-items: baseline; gap: 20px;
+    margin-bottom: 56px;
+  }
+  .cat-label {
+    font-family: var(--serif); font-size: 14px;
+    font-weight: 500; color: var(--red);
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .cat-title {
+    font-family: var(--serif); font-size: 42px;
+    font-weight: 600; color: var(--text); line-height: 1.1;
+  }
+  .cat-count {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 4px 12px;
+    border: 1px solid var(--border-md);
+  }
+
+  /* ── PROJECT CARDS ────────────────────────── */
+  .proj-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border-md);
+    max-width: 1280px;
+  }
+  .proj-card {
+    background: var(--white);
+    padding: 44px 40px;
+    position: relative;
+    transition: background 0.3s var(--ease);
+  }
+  .cat-section:nth-child(even) .proj-card { background: var(--gray-1); }
+  .proj-card:hover { background: var(--gray-1); }
+  .cat-section:nth-child(even) .proj-card:hover { background: var(--white); }
+
+  .proj-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--red);
+    transition: width 0.4s var(--ease);
+  }
+  .proj-card:hover::before { width: 100%; }
+
+  .proj-type {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 16px;
+  }
+  .proj-type-icon {
+    width: 18px; height: 18px; color: var(--red);
+  }
+  .proj-name {
+    font-family: var(--serif); font-size: 26px;
+    font-weight: 600; color: var(--text);
+    margin-bottom: 16px; line-height: 1.2;
+  }
+  .proj-meta {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 20px;
+  }
+  .proj-tag {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid var(--border-md);
+    color: var(--text-dim);
+  }
+  .proj-tag.accent {
+    background: var(--red-light);
+    border-color: rgba(200,16,46,0.2);
+    color: var(--red);
+  }
+  .proj-desc {
+    font-size: 14px; color: var(--text-dim);
+    line-height: 1.75;
+  }
+
+  /* ── CONTRAPARTIDAS ───────────────────────── */
+  #contrapartidas {
+    padding: 100px 80px;
+    background: var(--black);
+  }
+  #contrapartidas .s-tag .s-num,
+  #contrapartidas .s-tag .s-lbl { color: rgba(255,255,255,0.4); }
+  #contrapartidas .s-tag .s-rule { background: rgba(255,255,255,0.15); }
+  #contrapartidas .s-title { color: #EDE9E3; margin-bottom: 48px; }
+  .contra-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    max-width: 1280px;
+  }
+  .contra-col {
+    background: var(--black);
+    padding: 44px 40px;
+  }
+  .contra-col h3 {
+    font-family: var(--serif); font-size: 22px;
+    font-weight: 500; color: #EDE9E3;
+    margin-bottom: 28px;
+  }
+  .contra-col ul {
+    list-style: none;
+  }
+  .contra-col li {
+    font-size: 14px; color: rgba(255,255,255,0.55);
+    line-height: 1.75; padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding-left: 20px;
+    position: relative;
+  }
+  .contra-col li::before {
+    content: '';
+    position: absolute; left: 0; top: 20px;
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+  }
+
+  /* ── CTA ───────────────────────────────────── */
+  #projetos-cta {
+    padding: 80px;
+    background: var(--red);
+    text-align: center;
+  }
+  .cta-title {
+    font-family: var(--serif); font-size: 36px;
+    font-weight: 600; color: #fff;
+    margin-bottom: 16px;
+  }
+  .cta-sub {
+    font-size: 16px; color: rgba(255,255,255,0.75);
+    margin-bottom: 32px; max-width: 560px;
+    margin-left: auto; margin-right: auto;
+    line-height: 1.7;
+  }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 32px;
+    background: #fff; color: var(--red);
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .cta-btn:hover {
+    background: var(--gray-1);
+    transform: translateY(-2px);
+  }
+
+  /* ── RESPONSIVE ───────────────────────────── */
+  @media (max-width: 1100px) {
+    #projetos-hero { padding: 120px 48px 64px; }
+    .projetos-hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .cat-section { padding: 80px 48px; }
+    #contrapartidas { padding: 80px 48px; }
+  }
+  @media (max-width: 768px) {
+    #projetos-hero { padding: 100px 24px 48px; }
+    .projetos-hero-stats { flex-direction: column; gap: 20px; }
+    .cat-section { padding: 60px 24px; }
+    .proj-grid { grid-template-columns: 1fr; }
+    .contra-grid { grid-template-columns: 1fr; }
+    #contrapartidas { padding: 60px 24px; }
+    #projetos-cta { padding: 60px 24px; }
+    .cat-title { font-size: 32px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <!-- ── HERO ──────────────────────────────────── -->
+  <section id="projetos-hero">
+    <div class="s-tag reveal"><span class="s-num">01</span><span class="s-rule"></span><span class="s-lbl">Projetos Incentivados</span></div>
+    <h1 class="s-title reveal">Projetos aprovados,<br>prontos para patrocinar.</h1>
+    <div class="projetos-hero-grid">
+      <div class="reveal">
+        <p class="projetos-hero-lead">A Mester dispoe de um portfolio de projetos <strong>já aprovados</strong> pelo Ministério da Cultura, prontos para receber patrocinio via Lei Rouanet. Isso encurta significativamente o caminho para empresas que desejam investir em cultura com dedução fiscal.</p>
+        <div class="projetos-hero-stats">
+          <div>
+            <div class="ph-stat-val">12</div>
+            <div class="ph-stat-lbl">Projetos aprovados</div>
+          </div>
+          <div>
+            <div class="ph-stat-val">Art. 18</div>
+            <div class="ph-stat-lbl">Lei Rouanet</div>
+          </div>
+          <div>
+            <div class="ph-stat-val">100%</div>
+            <div class="ph-stat-lbl">Dedutível do IR</div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal" style="transition-delay:.12s">
+        <div class="projetos-badge">
+          <span class="projetos-badge-dot"></span>
+          <span class="projetos-badge-text">Prontos para captação</span>
+        </div>
+        <p class="projetos-hero-lead">Documentários factuais e livros de arte e fotografia com temas de sustentabilidade, brasilidade e inovação. Todos aprovados no Art. 18 da Lei Rouanet, com contrapartidas definidas para o patrocinador.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SUSTENTABILIDADE ────────────────────── -->
+  <section class="cat-section">
+    <div class="cat-header reveal">
+      <h2 class="cat-title">Sustentabilidade</h2>
+      <span class="cat-count">7 projetos</span>
+    </div>
+
+    <div class="proj-grid">
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          Documentário
+        </div>
+        <h3 class="proj-name">Apartados da Infância</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 247879</span>
+          <span class="proj-tag">R$ 889 mil</span>
+          <span class="proj-tag">52 min</span>
+        </div>
+        <p class="proj-desc">Projeto 5 em 1 que explora questões socioambientais das comunidades sobre palafitas na Ilha de São Vicente. Inclui documentário, livro, exposição itinerante, jogo da memória e website.</p>
+      </div>
+
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          Documentário
+        </div>
+        <h3 class="proj-name">Amazônia Sustentável</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 245095</span>
+          <span class="proj-tag">R$ 756 mil</span>
+          <span class="proj-tag">70 min</span>
+        </div>
+        <p class="proj-desc">Documentário sobre iniciativas de sustentabilidade que transformam a Amazônia, desde projetos de agricultura familiar e pesca artesanal até turismo comunitário.</p>
+      </div>
+
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          Documentário
+        </div>
+        <h3 class="proj-name">Mulheres do Mar</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 245896</span>
+          <span class="proj-tag">R$ 550 mil</span>
+          <span class="proj-tag">70 min</span>
+        </div>
+        <p class="proj-desc">A vida das mulheres das comunidades costeiras brasileiras, revelando histórias de resiliência, sustentabilidade, igualdade e preservação cultural.</p>
+      </div>
+
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          Livro de arte e fotografia
+        </div>
+        <h3 class="proj-name">Paisagens do Brasil</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 223648</span>
+          <span class="proj-tag">R$ 320 mil</span>
+        </div>
+        <p class="proj-desc">Narra a história do país por meio das características regionais que moldaram o território nacional, do litoral ao interior, conectando passado e presente.</p>
+      </div>
+
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          Livro de arte e fotografia
+        </div>
+        <h3 class="proj-name">Amazônia Sustentável</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 230098</span>
+          <span class="proj-tag">R$ 332 mil</span>
+        </div>
+        <p class="proj-desc">Revela a essência da Amazônia ao acompanhar projetos de sustentabilidade e registrar cenas de trabalho e celebração em Manaus, Belém e cidades ribeirinhas.</p>
+      </div>
+
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          Livro de arte e fotografia
+        </div>
+        <h3 class="proj-name">Mar Brasileiro</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 223736</span>
+          <span class="proj-tag">R$ 336 mil</span>
+        </div>
+        <p class="proj-desc">Revela as conexões entre o litoral brasileiro e a formação social, cultural e ambiental do país, celebrando o patrimônio cultural das regiões costeiras.</p>
+      </div>
+
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          Livro de arte e fotografia
+        </div>
+        <h3 class="proj-name">Trabalhadores do Mar</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 243888</span>
+          <span class="proj-tag">R$ 321 mil</span>
+        </div>
+        <p class="proj-desc">Livro de fotografias que explora a vida dos profissionais que fazem do mar seu ambiente de trabalho, de embarcados e petroleiros a mergulhadores.</p>
+      </div>
+
+      <!-- empty cell to complete 2-col grid -->
+      <div class="proj-card" style="border: none; min-height: 0;"></div>
+    </div>
+  </section>
+
+  <!-- ── BRASILIDADE ─────────────────────────── -->
+  <section class="cat-section">
+    <div class="cat-header reveal">
+      <h2 class="cat-title">Brasilidade</h2>
+      <span class="cat-count">3 projetos</span>
+    </div>
+
+    <div class="proj-grid">
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          Documentário
+        </div>
+        <h3 class="proj-name">Medicina Brasileira</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 247878</span>
+          <span class="proj-tag">R$ 650 mil</span>
+          <span class="proj-tag">52 min</span>
+        </div>
+        <p class="proj-desc">Explora a evolução da saúde no país, destacando a importância da medicina familiar, o impacto do programa Mais Médicos e os avanços do SUS.</p>
+      </div>
+
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          Livro de arte e fotografia
+        </div>
+        <h3 class="proj-name">Museu do Ipiranga</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 245451</span>
+          <span class="proj-tag">R$ 340 mil</span>
+        </div>
+        <p class="proj-desc">Celebração visual e textual de um dos maiores símbolos culturais e históricos do Brasil, revelando a grandiosidade das exposições e coleções do museu.</p>
+      </div>
+
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          Livro de arte e fotografia
+        </div>
+        <h3 class="proj-name">Ofícios: Paixão pelo Fazer</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 243913</span>
+          <span class="proj-tag">R$ 321 mil</span>
+        </div>
+        <p class="proj-desc">Revela a riqueza e diversidade dos ofícios artesanais brasileiros, destacando profissões como sapateiros e marceneiros e a importância do trabalho manual.</p>
+      </div>
+
+      <!-- empty cell -->
+      <div class="proj-card" style="border: none; min-height: 0;"></div>
+    </div>
+  </section>
+
+  <!-- ── DIVERSOS ────────────────────────────── -->
+  <section class="cat-section">
+    <div class="cat-header reveal">
+      <h2 class="cat-title">Diversos</h2>
+      <span class="cat-count">2 projetos</span>
+    </div>
+
+    <div class="proj-grid">
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          Documentário
+        </div>
+        <h3 class="proj-name">Inovação Tecnológica e Sustentabilidade</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 248101</span>
+          <span class="proj-tag">R$ 550 mil</span>
+          <span class="proj-tag">70 min</span>
+        </div>
+        <p class="proj-desc">Revela como práticas inovadoras e soluções sustentáveis podem transformar o mundo diante das crises climáticas e sociais, com depoimentos de especialistas.</p>
+      </div>
+
+      <div class="proj-card reveal">
+        <div class="proj-type">
+          <svg class="proj-type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          Documentário
+        </div>
+        <h3 class="proj-name">Futuro da Educação II</h3>
+        <div class="proj-meta">
+          <span class="proj-tag accent">Pronac 245898</span>
+          <span class="proj-tag">R$ 600 mil</span>
+          <span class="proj-tag">70 min</span>
+        </div>
+        <p class="proj-desc">Explora as transformações na educação diante das novas tecnologias, como a inteligência artificial, e seu impacto no aprendizado e no ensino do século XXI.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTRAPARTIDAS ──────────────────────── -->
+  <section id="contrapartidas">
+    <div class="s-tag reveal"><span class="s-num">02</span><span class="s-rule"></span><span class="s-lbl">Contrapartidas</span></div>
+    <h2 class="s-title reveal">O que o patrocinador recebe.</h2>
+    <div class="contra-grid reveal">
+      <div class="contra-col">
+        <h3>Documentários Factuais</h3>
+        <ul>
+          <li>Logomarca nos créditos de abertura e encerramento do filme</li>
+          <li>Logomarca em todo material impresso e/ou eletrônico de divulgação e promoção</li>
+          <li>Lançamento em local de escolha do patrocinador</li>
+          <li>Ação educacional gratuita em escola e/ou instituição pública a escolha do patrocinador</li>
+          <li>Link do filme disponibilizado ao patrocinador</li>
+          <li>Distribuição para canais de televisão e plataformas de streaming</li>
+          <li>Ações alternativas de valorização da marca podem ser avaliadas</li>
+        </ul>
+      </div>
+      <div class="contra-col">
+        <h3>Livros de Arte e Fotografia</h3>
+        <ul>
+          <li>Até 10% (300 exemplares) da tiragem total do livro patrocinado, no caso de patrocínio integral</li>
+          <li>Mensagem institucional do patrocinador impressa no início do livro</li>
+          <li>Logomarca na contracapa do livro e em todo material de divulgação e promoção</li>
+          <li>Distribuição gratuita de 20% (600 exemplares) para instituições sociais ou educativas</li>
+          <li>Lançamento em local de escolha do patrocinador</li>
+          <li>Ação educacional gratuita em escola e/ou instituição pública</li>
+          <li>Ações alternativas de valorização da marca podem ser avaliadas</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ─────────────────────────────────── -->
+  <section id="projetos-cta">
+    <h2 class="cta-title reveal">Quer patrocinar um projeto?</h2>
+    <p class="cta-sub reveal">Todos os projetos estão aprovados e prontos para captação. Entre em contato e saiba como participar com dedução fiscal de até 100%.</p>
+    <a href="{% url 'core:contato' %}" class="cta-btn reveal">Fale Conosco →</a>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+{% endblock %}
