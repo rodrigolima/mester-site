@@ -1,0 +1,74 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$Aob87f6MCGePmxdOaJibuJ$Bd5PlcFEXJ7XSal/Wa+vu3ievFNWnYM+U2kA5ZsYyok=",
+    "last_login": "2026-03-15T14:27:37.453Z",
+    "is_superuser": true,
+    "username": "rodrigolima",
+    "first_name": "",
+    "last_name": "",
+    "email": "rlima10@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-15T14:27:01.559Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$GcYPrLf0vm56ireYAoF0tY$wYASjd+2wofH2ECkX0CLRpXcwHW9MVhRbYAJm7keNXc=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "rlima",
+    "first_name": "",
+    "last_name": "",
+    "email": "rlima10@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-15T20:02:40.433Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$YncTqzZoLNzalNjkT066ps$5Xv82hdZE9SEZHG+l8pJFzdzVKcQuLhsdY8AAzTh1cc=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "rlima10",
+    "first_name": "",
+    "last_name": "",
+    "email": "rlima10@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-15T20:06:27.535Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$JHV0pAgMBgVLnRm8bkDZos$IYtWKaJOqlCkwv9e/bBMbItTRYyJNR9hKtKAKOVX8vI=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@mester.com.br",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-15T20:09:45.415Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]
