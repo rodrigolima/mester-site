@@ -101,8 +101,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Security settings for production (HTTPS)
-if not DEBUG:
+# Security settings for production (HTTPS via Railway proxy)
+if os.environ.get('RAILWAY_ENVIRONMENT') or not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True

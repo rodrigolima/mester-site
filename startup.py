@@ -42,7 +42,18 @@ for username in ['admin', 'admin2']:
         User.objects.create_superuser(username, f'{username}@mester.com.br', 'trilhas99')
         print(f'Superuser "{username}" criado!')
     else:
-        print(f'Superuser "{username}" já existe.')
+        # Forçar reset da senha
+        u = User.objects.get(username=username)
+        u.set_password('trilhas99')
+        u.save()
+        print(f'Superuser "{username}" já existe - senha resetada.')
+
+# Verificar que o login funciona
+from django.contrib.auth import authenticate
+test = authenticate(username='admin', password='trilhas99')
+print(f'Login test: {"OK - admin autenticado!" if test else "FALHOU!"}')
+print(f'Total users: {User.objects.count()}')
+print(f'Users: {list(User.objects.values_list("username", "is_staff", "is_superuser"))}')
 
 print("=" * 50)
 print("SETUP COMPLETE - Starting gunicorn...")
