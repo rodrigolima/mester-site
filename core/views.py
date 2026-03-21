@@ -24,8 +24,14 @@ def audiovisual(request):
 
 
 def livros(request):
-    livros = Livro.objects.filter(ativo=True).prefetch_related('fotos')
-    return render(request, 'core/livros.html', {'livros': livros})
+    todos = Livro.objects.filter(ativo=True).prefetch_related('fotos')
+    livro_destaque = todos.filter(destaque=True).first() or todos.first()
+    outros_livros  = todos.exclude(pk=livro_destaque.pk) if livro_destaque else todos
+    return render(request, 'core/livros.html', {
+        'livro_destaque': livro_destaque,
+        'outros_livros':  outros_livros,
+        'livros': todos,
+    })
 
 
 def quem_somos(request):

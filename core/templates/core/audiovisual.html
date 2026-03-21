@@ -135,6 +135,34 @@
   }
   .av-hero-play svg { width: 14px; height: 14px; }
 
+  /* ── botão pause/play do hero ── */
+  #heroPauseBtn {
+    position: fixed;
+    top: 140px;
+    right: 32px;
+    z-index: 950;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 20px 11px 16px;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 999px;
+    color: rgba(255,255,255,0.9);
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+    opacity: 0.85;
+  }
+  #heroPauseBtn:hover { opacity: 1; background: rgba(0,0,0,0.65); }
+  #heroPauseBtn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
   .av-hero-scroll {
     position: absolute;
     right: 80px; bottom: 72px;
@@ -462,6 +490,7 @@
     .av-card:nth-child(3n) .av-card-thumb { padding-top: 56.25%; }
   }
   @media (max-width: 768px) {
+    #heroPauseBtn { top: 18px; right: 16px; }
     .av-hero-content { padding: 0 24px 48px; }
     .av-hero-scroll { display: none; }
     .av-intro { padding: 64px 24px; }
@@ -480,18 +509,32 @@
 
   <!-- ── HERO ─────────────────────────────────── -->
   <section class="av-hero">
-    {% if video_hero and video_hero.bunny_embed_url %}
-      <iframe class="av-hero-video-bg"
-              src="{{ video_hero.bunny_embed_url }}?autoplay=true&muted=true&loop=true&controls=false&background=true&preload=true"
-              allow="autoplay"
-              allowfullscreen>
-      </iframe>
-    {% elif video_hero and video_hero.thumbnail %}
-      <img class="av-hero-thumb" src="{{ video_hero.thumbnail.url }}" alt="" aria-hidden="true">
-    {% endif %}
+    <div id="heroBg">
+      {% if video_hero and video_hero.bunny_embed_url %}
+        <iframe id="heroIframe"
+                class="av-hero-video-bg"
+                src="{{ video_hero.bunny_embed_url }}?autoplay=true&muted=true&loop=true&controls=false&background=true&preload=true"
+                data-embed="{{ video_hero.bunny_embed_url }}"
+                {% if video_hero.thumbnail %}data-thumb="{{ video_hero.thumbnail.url }}"{% endif %}
+                allow="autoplay"
+                allowfullscreen>
+        </iframe>
+      {% elif video_hero and video_hero.thumbnail %}
+        <img class="av-hero-thumb" src="{{ video_hero.thumbnail.url }}" alt="" aria-hidden="true">
+      {% endif %}
+    </div>
     <div id="heroLoadCover"></div>
     <div class="av-hero-overlay" style="z-index:3;"></div>
-    <div class="av-hero-content" style="z-index:4;">
+    {% if video_hero and video_hero.bunny_embed_url %}
+    <button id="heroPauseBtn" aria-label="Pausar vídeo">
+      <svg id="heroPauseIcon" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="6" y="4" width="4" height="16" rx="1"/>
+        <rect x="14" y="4" width="4" height="16" rx="1"/>
+      </svg>
+      <span id="heroPauseLbl">Pausar</span>
+    </button>
+    {% endif %}
+    <div class="av-hero-content" style="z-index:6;">
       <div class="av-hero-eyebrow">Audiovisual</div>
       {% if video_hero %}
         <h1 class="av-hero-title">{{ video_hero.titulo }}</h1>
@@ -513,7 +556,7 @@
         <h1 class="av-hero-title">Histórias que<br><em style="font-style:italic;color:var(--red)">transformam.</em></h1>
       {% endif %}
     </div>
-    <div class="av-hero-scroll" style="z-index:4;">
+    <div class="av-hero-scroll" style="z-index:6;">
       <div class="av-hero-scroll-line"></div>
       <span class="av-hero-scroll-lbl">Scroll</span>
     </div>
@@ -627,15 +670,54 @@
 
 {% block extra_js %}
 <script>
-  // ── HERO COVER: some black screen until video starts ──────
+  // ── HERO COVER ────────────────────────────────────────────
   (function () {
     const cover = document.getElementById('heroLoadCover');
     if (!cover) return;
-    // Aguarda o vídeo ter tempo de iniciar (1.4 s) e remove suavemente
     setTimeout(function () {
       cover.classList.add('hidden');
       setTimeout(function () { cover.remove(); }, 950);
     }, 1400);
+  })();
+
+  // ── HERO PAUSE / PLAY ─────────────────────────────────────
+  (function () {
+    const pauseBtn  = document.getElementById('heroPauseBtn');
+    const pauseIcon = document.getElementById('heroPauseIcon');
+    const pauseLbl  = document.getElementById('heroPauseLbl');
+    const heroBg    = document.getElementById('heroBg');
+    if (!pauseBtn || !heroBg) return;
+
+    const iframe    = document.getElementById('heroIframe');
+    const embedBase = iframe ? iframe.dataset.embed : null;
+    const thumbUrl  = iframe ? iframe.dataset.thumb  : null;
+
+    const PAUSE_ICON = '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>';
+    const PLAY_ICON  = '<path d="M8 5v14l11-7L8 5z"/>';
+
+    let playing = true;
+
+    pauseBtn.addEventListener('click', function () {
+      playing = !playing;
+
+      if (playing) {
+        // Retoma: reinsere o iframe com autoplay
+        heroBg.innerHTML = '<iframe id="heroIframe" class="av-hero-video-bg"'
+          + ' src="' + embedBase + '?autoplay=true&muted=true&loop=true&controls=false&background=true"'
+          + ' allow="autoplay" allowfullscreen></iframe>';
+        pauseIcon.innerHTML = PAUSE_ICON;
+        pauseLbl.textContent = 'Pausar';
+        pauseBtn.setAttribute('aria-label', 'Pausar vídeo');
+      } else {
+        // Pausa: remove iframe, mostra thumbnail estático
+        heroBg.innerHTML = thumbUrl
+          ? '<img class="av-hero-thumb" src="' + thumbUrl + '" alt="" aria-hidden="true">'
+          : '';
+        pauseIcon.innerHTML = PLAY_ICON;
+        pauseLbl.textContent = 'Continuar';
+        pauseBtn.setAttribute('aria-label', 'Continuar vídeo');
+      }
+    });
   })();
 
   const modal = document.getElementById('videoModal');
