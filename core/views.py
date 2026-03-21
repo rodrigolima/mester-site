@@ -13,8 +13,14 @@ def projetos(request):
 
 
 def audiovisual(request):
-    videos = Video.objects.filter(ativo=True)
-    return render(request, 'core/audiovisual.html', {'videos': videos})
+    todos = Video.objects.filter(ativo=True)
+    video_hero = todos.filter(destaque=True).first() or todos.first()
+    outros_videos = todos.exclude(pk=video_hero.pk) if video_hero else todos
+
+    return render(request, 'core/audiovisual.html', {
+        'video_hero': video_hero,
+        'outros_videos': outros_videos,
+    })
 
 
 def livros(request):

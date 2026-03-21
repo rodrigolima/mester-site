@@ -17,8 +17,13 @@ class Video(models.Model):
         choices=CATEGORIA_CHOICES, default='documentario',
     )
     bunny_embed_url = models.URLField(
-        'URL do Player Bunny',
-        help_text='Cole aqui a URL de embed do Bunny Stream (ex: https://iframe.mediadelivery.net/embed/...)',
+        'URL do Player Bunny (iframe)',
+        help_text='URL de embed do Bunny Stream (ex: https://iframe.mediadelivery.net/embed/...)',
+    )
+    bunny_video_url = models.URLField(
+        'URL direta do vídeo (MP4)',
+        blank=True,
+        help_text='URL direta do arquivo MP4 no Bunny CDN (ex: https://vz-XXXXX.b-cdn.net/VIDEO_ID/play_720p.mp4). Usada como vídeo de fundo no hero.',
     )
     thumbnail = models.ImageField(
         'Thumbnail',

@@ -5,164 +5,377 @@
 
 {% block extra_css %}
 <style>
-  /* ── PAGE HEADER ────────────────────────── */
-  .av-header {
-    padding: 140px 80px 80px;
-    background: var(--gray-1);
-    border-bottom: 1px solid var(--border);
-  }
-  .av-header .s-lead { margin-bottom: 0; }
-
-  /* ── VIDEO GRID ─────────────────────────── */
-  .av-section {
-    background: var(--gray-1);
-    padding: 80px 80px 112px;
-  }
-  .av-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 24px;
+  #page-audiovisual {
+    background: #080808;
+    color: #EDE9E3;
   }
 
-  /* ── VIDEO CARD ─────────────────────────── */
-  .v-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
-    overflow: hidden;
-  }
-  .v-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
-  }
-
-  .v-thumb {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%; /* 16:9 */
-    background: var(--black);
-    overflow: hidden;
-  }
-  .v-thumb img {
+  /* ── HERO ─────────────────────────────────── */
+  #heroLoadCover {
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s var(--ease), opacity 0.3s;
-  }
-  .v-card:hover .v-thumb img {
-    transform: scale(1.05);
-    opacity: 0.8;
-  }
-
-  /* Placeholder quando não há thumbnail */
-  .v-thumb-placeholder {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  }
-  .v-thumb-placeholder svg {
-    width: 48px;
-    height: 48px;
-    color: rgba(255,255,255,0.15);
-  }
-
-  /* Play icon overlay */
-  .v-play {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-    width: 64px;
-    height: 64px;
-    background: rgba(200, 16, 46, 0.9);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s var(--ease), background 0.3s;
+    background: #000;
     z-index: 2;
+    transition: opacity 0.9s ease;
   }
-  .v-play svg {
-    width: 24px;
-    height: 24px;
-    color: #fff;
-    margin-left: 3px;
+  #heroLoadCover.hidden {
+    opacity: 0;
+    pointer-events: none;
   }
-  .v-card:hover .v-play {
-    transform: translate(-50%, -50%) scale(1);
+  .av-hero {
+    position: relative;
+    height: 100vh;
+    min-height: 580px;
+    overflow: hidden;
+    background: #000;
+  }
+  .av-hero-video-bg {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    /* 16:9 escalado para sempre cobrir 100vw × 100vh */
+    min-width: 177.78vh; /* 100vh × (16/9) */
+    min-height: 56.25vw; /* 100vw × (9/16) */
+    width: 100%; height: 100%;
+    border: 0;
+    z-index: 0;
+    pointer-events: none;
+    filter: brightness(0.55);
+  }
+  /* Fallback: thumbnail com Ken Burns quando não há vídeo direto */
+  .av-hero-thumb {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.5);
+    z-index: 0;
+    animation: kenBurns 16s ease-in-out infinite alternate;
+    transform-origin: center center;
+  }
+  @keyframes kenBurns {
+    from { transform: scale(1);    }
+    to   { transform: scale(1.08); }
+  }
+  .av-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(8,8,8,0.97) 0%,
+      rgba(8,8,8,0.4) 45%,
+      rgba(8,8,8,0.1) 100%
+    );
+    z-index: 1;
+  }
+  .av-hero-content {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 0 80px 72px;
+    z-index: 2;
+    max-width: 900px;
+  }
+  .av-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 24px;
+  }
+  .av-hero-eyebrow::before {
+    content: '';
+    width: 28px; height: 1px;
     background: var(--red);
   }
-
-  .v-info {
-    padding: 24px;
+  .av-hero-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5.5vw, 72px);
+    font-weight: 500;
+    color: #EDE9E3;
+    line-height: 1.05;
+    margin-bottom: 28px;
   }
-  .v-cat {
-    display: inline-block;
+  .av-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .av-hero-cat {
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
+    color: rgba(237,233,227,0.4);
+    padding: 8px 0;
+  }
+  .av-hero-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 32px;
+    border: 1px solid rgba(237,233,227,0.25);
+    color: #EDE9E3;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: transparent;
+    font-family: var(--sans);
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .av-hero-play:hover {
+    background: var(--red);
+    border-color: var(--red);
+  }
+  .av-hero-play svg { width: 14px; height: 14px; }
+
+  .av-hero-scroll {
+    position: absolute;
+    right: 80px; bottom: 72px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .av-hero-scroll-line {
+    width: 1px; height: 56px;
+    background: linear-gradient(to bottom, rgba(237,233,227,0.25), transparent);
+  }
+  .av-hero-scroll-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(237,233,227,0.25);
+    writing-mode: vertical-rl;
+  }
+
+  /* ── INTRO ────────────────────────────────── */
+  .av-intro {
+    background: #080808;
+    padding: 96px 80px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .av-intro-inner {
+    max-width: 1280px;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .av-intro-h {
+    font-family: var(--serif);
+    font-size: clamp(32px, 3.5vw, 50px);
+    font-weight: 500;
+    color: #EDE9E3;
+    line-height: 1.1;
+  }
+  .av-intro-h em { font-style: italic; color: var(--red); }
+  .av-intro-body p {
+    font-size: 15px;
+    color: #555;
+    line-height: 1.9;
+    margin-bottom: 20px;
+  }
+  .av-intro-body p:last-child { margin-bottom: 0; }
+  .av-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.05);
+    margin-top: 48px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .av-stat {
+    background: #080808;
+    padding: 28px 24px;
+  }
+  .av-stat-val {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 300;
+    color: #EDE9E3;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .av-stat-lbl {
+    font-size: 10px;
+    color: #333;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+
+  /* ── FILMS ────────────────────────────────── */
+  .av-films {
+    background: #080808;
+    padding: 0 80px 120px;
+  }
+  .av-films-header {
+    padding: 56px 0 40px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 2px;
+  }
+  .av-films-title {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 400;
+    color: #EDE9E3;
+    font-style: italic;
+  }
+  .av-films-count {
+    font-size: 10px;
+    color: #333;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Grid estilo editorial / Mediastorm */
+  .av-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2px;
+  }
+  .av-card {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background: #111;
+  }
+  .av-card:nth-child(3n+1) { grid-column: span 7; }
+  .av-card:nth-child(3n+2) { grid-column: span 5; }
+  .av-card:nth-child(3n)   { grid-column: span 12; }
+
+  .av-card-thumb {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    overflow: hidden;
+  }
+  .av-card:nth-child(3n) .av-card-thumb { padding-top: 38%; }
+
+  .av-card-thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.7);
+    transition: transform 0.8s var(--ease), filter 0.5s;
+  }
+  .av-card:hover .av-card-thumb img {
+    transform: scale(1.04);
+    filter: brightness(0.85);
+  }
+  .av-card-thumb-placeholder {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #111 0%, #1c1c1c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .av-card-thumb-placeholder svg {
+    width: 36px; height: 36px;
+    color: rgba(255,255,255,0.07);
+  }
+  .av-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.15) 50%, transparent 100%);
+  }
+  .av-card-play {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.75);
+    opacity: 0;
+    width: 56px; height: 56px;
+    border: 1.5px solid rgba(237,233,227,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s, transform 0.35s var(--ease);
+    z-index: 2;
+  }
+  .av-card-play svg { width: 18px; height: 18px; color: #EDE9E3; margin-left: 3px; }
+  .av-card:hover .av-card-play {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .av-card-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 24px 28px;
+    z-index: 2;
+  }
+  .av-card-cat {
+    display: block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
     color: var(--red);
     margin-bottom: 8px;
   }
-  .v-title {
+  .av-card-title {
     font-family: var(--serif);
-    font-size: 22px;
+    font-size: clamp(17px, 1.8vw, 24px);
     font-weight: 500;
-    color: var(--text);
-    line-height: 1.25;
-    margin-bottom: 8px;
+    color: #EDE9E3;
+    line-height: 1.2;
+    margin-bottom: 10px;
   }
-  .v-desc {
-    font-size: 14px;
-    color: var(--text-dim);
-    line-height: 1.7;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+  .av-card-desc {
+    font-size: 13px;
+    color: rgba(237,233,227,0.45);
+    line-height: 1.65;
+    max-height: 0;
     overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s var(--ease), opacity 0.35s;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .av-card:hover .av-card-desc {
+    max-height: 56px;
+    opacity: 1;
   }
 
-  /* ── EMPTY STATE ────────────────────────── */
+  /* ── EMPTY STATE ──────────────────────────── */
   .av-empty {
+    grid-column: 1 / -1;
     text-align: center;
-    padding: 80px 40px;
-    color: var(--text-muted);
+    padding: 100px 40px;
+    color: #2a2a2a;
   }
-  .av-empty svg {
-    width: 64px;
-    height: 64px;
-    color: var(--gray-4);
-    margin-bottom: 24px;
-  }
-  .av-empty p {
-    font-size: 16px;
-    line-height: 1.7;
-  }
+  .av-empty svg { width: 56px; height: 56px; margin-bottom: 20px; }
+  .av-empty p { font-size: 15px; line-height: 1.7; margin-top: 0; color: #333; }
 
-  /* ── MODAL / LIGHTBOX ───────────────────── */
+  /* ── MODAL ────────────────────────────────── */
   .v-modal {
     position: fixed;
-    inset: 0;
-    z-index: 9999;
+    inset: 0; z-index: 9999;
     display: none;
     align-items: center;
     justify-content: center;
     padding: 40px;
   }
-  .v-modal.open {
-    display: flex;
-  }
+  .v-modal.open { display: flex; }
   .v-modal-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.92);
+    background: rgba(0,0,0,0.96);
     cursor: pointer;
   }
   .v-modal-content {
@@ -173,10 +386,9 @@
     animation: modalIn 0.35s var(--ease);
   }
   @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.95) translateY(16px); }
+    from { opacity: 0; transform: scale(0.96) translateY(16px); }
     to   { opacity: 1; transform: scale(1) translateY(0); }
   }
-
   .v-modal-player {
     position: relative;
     width: 100%;
@@ -186,11 +398,9 @@
   .v-modal-player iframe {
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     border: none;
   }
-
   .v-modal-info {
     padding: 28px 4px;
     display: flex;
@@ -209,123 +419,197 @@
   }
   .v-modal-title {
     font-family: var(--serif);
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 500;
     color: #EDE9E3;
     line-height: 1.25;
     margin-bottom: 10px;
   }
   .v-modal-desc {
-    font-size: 15px;
-    color: #8A8680;
-    line-height: 1.75;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.8;
   }
-
   .v-modal-close {
     flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
+    width: 48px; height: 48px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
     color: #EDE9E3;
-    font-size: 20px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 18px;
     transition: background 0.2s, border-color 0.2s;
   }
   .v-modal-close:hover {
-    background: rgba(200, 16, 46, 0.2);
+    background: rgba(200,16,46,0.2);
     border-color: var(--red);
     color: var(--red);
   }
 
-  /* ── RESPONSIVE ─────────────────────────── */
+  /* ── RESPONSIVE ───────────────────────────── */
   @media (max-width: 1100px) {
-    .av-header { padding: 120px 48px 64px; }
-    .av-section { padding: 64px 48px 80px; }
-    .av-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    .av-hero-content { padding: 0 48px 60px; }
+    .av-hero-scroll { right: 48px; bottom: 60px; }
+    .av-intro { padding: 80px 48px; }
+    .av-intro-inner { grid-template-columns: 1fr; gap: 40px; }
+    .av-films { padding: 0 48px 80px; }
+    .av-card:nth-child(3n+1),
+    .av-card:nth-child(3n+2),
+    .av-card:nth-child(3n)   { grid-column: span 12; }
+    .av-card:nth-child(3n) .av-card-thumb { padding-top: 56.25%; }
   }
   @media (max-width: 768px) {
-    .av-header { padding: 100px 24px 48px; }
-    .av-section { padding: 48px 24px 64px; }
-    .av-grid { grid-template-columns: 1fr; }
-    .v-modal { padding: 16px; }
-    .v-modal-info { flex-direction: column; gap: 16px; }
-    .v-modal-title { font-size: 22px; }
+    .av-hero-content { padding: 0 24px 48px; }
+    .av-hero-scroll { display: none; }
+    .av-intro { padding: 64px 24px; }
+    .av-films { padding: 0 24px 64px; }
+    .av-stats { grid-template-columns: 1fr 1fr; }
+    .v-modal { padding: 0; }
+    .v-modal-content { max-height: 100vh; overflow-y: auto; }
+    .v-modal-info { flex-direction: column; gap: 16px; padding: 20px; }
+    .v-modal-title { font-size: 20px; }
   }
 </style>
 {% endblock %}
 
 {% block content %}
-  <!-- ── HEADER ──────────────────────────────── -->
-  <section class="av-header">
-    <div class="s-tag reveal">
-      <span class="s-num">●</span>
-      <span class="s-rule"></span>
-      <span class="s-lbl">Multimídia</span>
+<div id="page-audiovisual">
+
+  <!-- ── HERO ─────────────────────────────────── -->
+  <section class="av-hero">
+    {% if video_hero and video_hero.bunny_embed_url %}
+      <iframe class="av-hero-video-bg"
+              src="{{ video_hero.bunny_embed_url }}?autoplay=true&muted=true&loop=true&controls=false&background=true&preload=true"
+              allow="autoplay"
+              allowfullscreen>
+      </iframe>
+    {% elif video_hero and video_hero.thumbnail %}
+      <img class="av-hero-thumb" src="{{ video_hero.thumbnail.url }}" alt="" aria-hidden="true">
+    {% endif %}
+    <div id="heroLoadCover"></div>
+    <div class="av-hero-overlay" style="z-index:3;"></div>
+    <div class="av-hero-content" style="z-index:4;">
+      <div class="av-hero-eyebrow">Audiovisual</div>
+      {% if video_hero %}
+        <h1 class="av-hero-title">{{ video_hero.titulo }}</h1>
+        <div class="av-hero-actions">
+          <span class="av-hero-cat">{{ video_hero.get_categoria_display }}</span>
+          <button class="av-hero-play"
+                  data-embed="{{ video_hero.bunny_embed_url }}"
+                  data-titulo="{{ video_hero.titulo }}"
+                  data-descricao="{{ video_hero.descricao }}"
+                  data-categoria="{{ video_hero.get_categoria_display }}"
+                  onclick="openVideoModal(this)">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7L8 5z" fill="currentColor"/>
+            </svg>
+            Assistir com som
+          </button>
+        </div>
+      {% else %}
+        <h1 class="av-hero-title">Histórias que<br><em style="font-style:italic;color:var(--red)">transformam.</em></h1>
+      {% endif %}
     </div>
-    <h1 class="s-title reveal">Audiovisual.</h1>
-    <p class="s-lead reveal">Documentários, séries e produções que transformam histórias em experiência visual e cultural.</p>
+    <div class="av-hero-scroll" style="z-index:4;">
+      <div class="av-hero-scroll-line"></div>
+      <span class="av-hero-scroll-lbl">Scroll</span>
+    </div>
   </section>
 
-  <!-- ── VIDEO GRID ──────────────────────────── -->
-  <section class="av-section">
-    {% if videos %}
-      <div class="av-grid">
-        {% for video in videos %}
-          <div class="v-card reveal"
+  <!-- ── INTRO ─────────────────────────────────── -->
+  <section class="av-intro">
+    <div class="av-intro-inner reveal">
+      <h2 class="av-intro-h">Produção audiovisual com<br><em>impacto cultural.</em></h2>
+      <div class="av-intro-body">
+        <p>A Mester produz documentários, séries e conteúdo audiovisual que vai além da imagem — são narrativas construídas com rigor jornalístico, sensibilidade estética e compromisso com a memória cultural brasileira.</p>
+        <p>Da pesquisa à pós-produção, cada projeto é desenvolvido com uma equipe multidisciplinar dedicada a transformar histórias reais em experiência visual de alto impacto para marcas, instituições e sociedade.</p>
+        <div class="av-stats">
+          <div class="av-stat">
+            <div class="av-stat-val">12+</div>
+            <div class="av-stat-lbl">Projetos produzidos</div>
+          </div>
+          <div class="av-stat">
+            <div class="av-stat-val">4</div>
+            <div class="av-stat-lbl">Estados brasileiros</div>
+          </div>
+          <div class="av-stat">
+            <div class="av-stat-val" style="font-size:22px; padding-top:4px">Lei<br>Rouanet</div>
+            <div class="av-stat-lbl">Captação via<br>incentivo fiscal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FILMS ─────────────────────────────────── -->
+  <section class="av-films">
+    <div class="av-films-header reveal">
+      <h2 class="av-films-title">Todos os filmes.</h2>
+      {% if outros_videos %}
+        <span class="av-films-count">{{ outros_videos.count }} produções</span>
+      {% endif %}
+    </div>
+
+    <div class="av-grid">
+      {% if outros_videos %}
+        {% for video in outros_videos %}
+          <div class="av-card reveal"
                style="transition-delay: {{ forloop.counter0 }}00ms"
                data-embed="{{ video.bunny_embed_url }}"
                data-titulo="{{ video.titulo }}"
                data-descricao="{{ video.descricao }}"
                data-categoria="{{ video.get_categoria_display }}"
                onclick="openVideoModal(this)">
-            <div class="v-thumb">
+            <div class="av-card-thumb">
               {% if video.thumbnail %}
                 <img src="{{ video.thumbnail.url }}" alt="{{ video.titulo }}" loading="lazy">
               {% else %}
-                <div class="v-thumb-placeholder">
+                <div class="av-card-thumb-placeholder">
                   <svg viewBox="0 0 48 48" fill="none">
                     <rect x="4" y="8" width="40" height="32" rx="2" stroke="currentColor" stroke-width="1.5"/>
                     <path d="M20 18l10 6-10 6V18z" fill="currentColor"/>
                   </svg>
                 </div>
               {% endif %}
-              <div class="v-play">
+              <div class="av-card-overlay"></div>
+              <div class="av-card-play">
                 <svg viewBox="0 0 24 24" fill="none">
                   <path d="M8 5v14l11-7L8 5z" fill="currentColor"/>
                 </svg>
               </div>
             </div>
-            <div class="v-info">
-              <span class="v-cat">{{ video.get_categoria_display }}</span>
-              <h3 class="v-title">{{ video.titulo }}</h3>
+            <div class="av-card-info">
+              <span class="av-card-cat">{{ video.get_categoria_display }}</span>
+              <h3 class="av-card-title">{{ video.titulo }}</h3>
               {% if video.descricao %}
-                <p class="v-desc">{{ video.descricao }}</p>
+                <p class="av-card-desc">{{ video.descricao }}</p>
               {% endif %}
             </div>
           </div>
         {% endfor %}
-      </div>
-    {% else %}
-      <div class="av-empty reveal">
-        <svg viewBox="0 0 64 64" fill="none">
-          <rect x="6" y="14" width="52" height="36" rx="3" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M26 24l14 8-14 8V24z" fill="currentColor" opacity="0.3"/>
-        </svg>
-        <p>Em breve, nosso acervo audiovisual estará disponível aqui.<br>Volte em breve!</p>
-      </div>
-    {% endif %}
+      {% else %}
+        <div class="av-empty">
+          <svg viewBox="0 0 64 64" fill="none">
+            <rect x="6" y="14" width="52" height="36" rx="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M26 24l14 8-14 8V24z" fill="currentColor" opacity="0.3"/>
+          </svg>
+          <p>Em breve, mais produções estarão disponíveis aqui.</p>
+        </div>
+      {% endif %}
+    </div>
   </section>
 
-  <!-- ── MODAL ───────────────────────────────── -->
+  <!-- ── MODAL ─────────────────────────────────── -->
   <div class="v-modal" id="videoModal">
     <div class="v-modal-backdrop" onclick="closeVideoModal()"></div>
     <div class="v-modal-content">
       <div class="v-modal-player">
-        <iframe id="modalIframe" src="" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        <iframe id="modalIframe" src=""
+                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen></iframe>
       </div>
       <div class="v-modal-info">
         <div class="v-modal-text">
@@ -337,28 +621,34 @@
       </div>
     </div>
   </div>
+
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
+  // ── HERO COVER: some black screen until video starts ──────
+  (function () {
+    const cover = document.getElementById('heroLoadCover');
+    if (!cover) return;
+    // Aguarda o vídeo ter tempo de iniciar (1.4 s) e remove suavemente
+    setTimeout(function () {
+      cover.classList.add('hidden');
+      setTimeout(function () { cover.remove(); }, 950);
+    }, 1400);
+  })();
+
   const modal = document.getElementById('videoModal');
   const iframe = document.getElementById('modalIframe');
 
   function openVideoModal(card) {
-    const embed = card.dataset.embed;
-    const titulo = card.dataset.titulo;
-    const descricao = card.dataset.descricao;
-    const categoria = card.dataset.categoria;
-
-    // Garante autoplay na URL do Bunny
-    let src = embed;
-    if (src.indexOf('?') === -1) src += '?autoplay=true';
-    else if (src.indexOf('autoplay') === -1) src += '&autoplay=true';
-
-    iframe.src = src;
-    document.getElementById('modalCat').textContent = categoria;
-    document.getElementById('modalTitle').textContent = titulo;
-    document.getElementById('modalDesc').textContent = descricao;
+    const base = card.dataset.embed
+      .split('?')[0]
+      .replace('player.mediadelivery.net/play/', 'iframe.mediadelivery.net/embed/');
+    iframe.src = base + '?autoplay=true';
+    document.getElementById('modalCat').textContent   = card.dataset.categoria;
+    document.getElementById('modalTitle').textContent = card.dataset.titulo;
+    document.getElementById('modalDesc').textContent  = card.dataset.descricao;
 
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -370,11 +660,8 @@
     document.body.style.overflow = '';
   }
 
-  // Fechar com ESC
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && modal.classList.contains('open')) {
-      closeVideoModal();
-    }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeVideoModal();
   });
 </script>
 {% endblock %}
