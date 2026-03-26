@@ -648,7 +648,7 @@
     <p class="s-lead reveal">Projetos que transformaram ideias em linguagem, memória e impacto cultural duradouro.</p>
 
     <div class="projects-grid reveal" style="transition-delay:.1s">
-      <div class="p-card" onclick="window.location.href='{% url 'core:audiovisual' %}'">
+      <div class="p-card" onclick="window.location.href='{% url 'core:projeto_detalhe' 'culinaria-artesanato-baia-todos-santos' %}'">
         <div class="p-inner">
           <img src="{% static 'core/img/Baia_todos_Santos_18.jpg' %}" alt="Culinária e Artesanato — Baía de Todos os Santos" class="p-card-img">
         </div>
@@ -656,10 +656,10 @@
         <div class="p-border"></div>
         <div class="p-deco">I</div>
         <div class="p-content">
-          <span class="p-cat">Audiovisual</span>
+          <span class="p-cat">Documentário</span>
           <h3 class="p-title">Culinária e Artesanato — Baía de Todos os Santos</h3>
           <p class="p-desc">Documentário que explora a riqueza cultural, culinária e artesanal da região da Baía de Todos os Santos.</p>
-          <a href="{% url 'core:audiovisual' %}" class="p-cta">Assistir →</a>
+          <a href="{% url 'core:projeto_detalhe' 'culinaria-artesanato-baia-todos-santos' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
       <div class="p-card">
@@ -671,7 +671,7 @@
           <span class="p-cat">Editorial</span>
           <h3 class="p-title">Acervo Fotográfico Nacional</h3>
           <p class="p-desc">Livro de arte com distribuição para museus e bibliotecas públicas em todo o Brasil.</p>
-          <a href="#" class="p-cta">Ver projeto →</a>
+          <a href="{% url 'core:projetos' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
       <div class="p-card">
@@ -683,7 +683,7 @@
           <span class="p-cat">Educacional</span>
           <h3 class="p-title">Plataforma de Ensino Criativo</h3>
           <p class="p-desc">Ecossistema digital de educação audiovisual para jovens criadores.</p>
-          <a href="#" class="p-cta">Ver projeto →</a>
+          <a href="{% url 'core:projetos' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
       <div class="p-card">
@@ -695,7 +695,7 @@
           <span class="p-cat">Documentário</span>
           <h3 class="p-title">Memória Viva</h3>
           <p class="p-desc">Preservação de tradições em risco de desaparecimento através de linguagem audiovisual contemporânea.</p>
-          <a href="#" class="p-cta">Ver projeto →</a>
+          <a href="{% url 'core:projetos' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
       <div class="p-card">
@@ -707,7 +707,7 @@
           <span class="p-cat">Branded Content</span>
           <h3 class="p-title">Território e Identidade</h3>
           <p class="p-desc">Série sobre diversidade cultural das regiões brasileiras para plataforma de streaming.</p>
-          <a href="#" class="p-cta">Ver projeto →</a>
+          <a href="{% url 'core:projetos' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
       <div class="p-card">
@@ -719,7 +719,7 @@
           <span class="p-cat">ESG</span>
           <h3 class="p-title">Relatório de Impacto Cultural</h3>
           <p class="p-desc">Produção audiovisual e editorial de relatório de impacto para empresa do setor de energia.</p>
-          <a href="#" class="p-cta">Ver projeto →</a>
+          <a href="{% url 'core:projetos' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
     </div>
@@ -857,7 +857,7 @@
         <h3>projetos já aprovados, prontos para patrocínio.</h3>
         <p>A Mester dispõe de documentários e livros de arte com aprovação no Art. 18 da Lei Rouanet. Sua empresa pode investir em cultura com dedução de até 100% do IR.</p>
       </div>
-      <a href="{% url 'core:projetos' %}" class="aprovados-btn">Ver Projetos →</a>
+      <a href="{% url 'core:pre_aprovados' %}" class="aprovados-btn">Ver Projetos →</a>
     </section>
   </div>
 

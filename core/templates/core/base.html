@@ -90,7 +90,7 @@
 
     .nav-links {
       display: flex;
-      gap: 40px;
+      gap: 32px;
       list-style: none;
       align-items: center;
     }
@@ -362,7 +362,8 @@
     </a>
     <ul class="nav-links">
       <li><a href="{% url 'core:home' %}"{% if request.resolver_match.url_name == 'home' %} class="active"{% endif %}>Home</a></li>
-      <li><a href="{% url 'core:projetos' %}"{% if request.resolver_match.url_name == 'projetos' %} class="active"{% endif %}>Projetos</a></li>
+      <li><a href="{% url 'core:projetos' %}"{% if request.resolver_match.url_name == 'projetos' or request.resolver_match.url_name == 'projeto_detalhe' %} class="active"{% endif %}>Projetos</a></li>
+      <li><a href="{% url 'core:pre_aprovados' %}"{% if request.resolver_match.url_name == 'pre_aprovados' or request.resolver_match.url_name == 'pre_aprovado_detalhe' %} class="active"{% endif %}>Pré-Aprovados</a></li>
       <li><a href="{% url 'core:audiovisual' %}"{% if request.resolver_match.url_name == 'audiovisual' %} class="active"{% endif %}>Audiovisual</a></li>
       <li><a href="{% url 'core:livros' %}"{% if request.resolver_match.url_name == 'livros' %} class="active"{% endif %}>Livros</a></li>
       <li><a href="{% url 'core:quem_somos' %}"{% if request.resolver_match.url_name == 'quem_somos' %} class="active"{% endif %}>Quem Somos</a></li>
@@ -387,6 +388,7 @@
           <li><a href="{% url 'core:home' %}#abordagem">Abordagem</a></li>
           <li><a href="{% url 'core:home' %}#beneficios">Leis de Incentivo</a></li>
           <li><a href="{% url 'core:projetos' %}">Projetos</a></li>
+          <li><a href="{% url 'core:pre_aprovados' %}">Pré-Aprovados</a></li>
           <li><a href="{% url 'core:audiovisual' %}">Audiovisual</a></li>
           <li><a href="{% url 'core:livros' %}">Livros</a></li>
           <li><a href="{% url 'core:quem_somos' %}">Quem Somos</a></li>

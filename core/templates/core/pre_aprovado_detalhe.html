@@ -1,0 +1,324 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ projeto.titulo }} — Pré-Aprovados — Mester{% endblock %}
+
+{% block extra_css %}
+<style>
+  #page-pa-detalhe {
+    background: var(--white);
+  }
+
+  /* ── HERO ─────────────────────────────────── */
+  .pa-hero {
+    position: relative;
+    padding-top: 84px;
+    background: var(--black);
+  }
+  .pa-hero-img-wrap {
+    width: 100%;
+    max-height: 60vh;
+    overflow: hidden;
+  }
+  .pa-hero-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-height: 60vh;
+    filter: brightness(0.8);
+  }
+  .pa-hero-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(to top, var(--black), transparent);
+  }
+  .pa-hero-content {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 0 80px 56px;
+    z-index: 2;
+  }
+  .pa-hero-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: rgba(200,16,46,0.12);
+    border: 1px solid rgba(200,16,46,0.3);
+    color: var(--red);
+    margin-bottom: 20px;
+  }
+  .pa-hero-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 4.5vw, 56px);
+    font-weight: 600;
+    color: #EDE9E3;
+    line-height: 1.08;
+  }
+  .pa-hero-noposter {
+    height: 30vh;
+    background: linear-gradient(135deg, #1a1a18, var(--black));
+  }
+
+  /* ── BACK ────────────────────────────────── */
+  .pa-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 28px 80px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    border-bottom: 1px solid var(--border);
+    width: 100%;
+  }
+  .pa-back:hover { color: var(--red); }
+  .pa-back svg { width: 16px; height: 16px; }
+
+  /* ── INFO GRID ───────────────────────────── */
+  .pa-info {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    padding: 72px 80px;
+    max-width: 1280px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pa-info-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .pa-info-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 1px solid var(--border-md);
+    color: var(--text-dim);
+  }
+  .pa-info-tag.accent {
+    background: var(--red-light);
+    border-color: rgba(200,16,46,0.2);
+    color: var(--red);
+  }
+  .pa-info-desc {
+    font-size: 16px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  /* ── CONCEITO ────────────────────────────── */
+  .pa-conceito-title,
+  .pa-contra-title,
+  .pa-autor-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .pa-conceito-text {
+    font-family: var(--serif);
+    font-size: 19px;
+    color: var(--text-dim);
+    line-height: 1.85;
+  }
+
+  /* ── CONTRAPARTIDAS ──────────────────────── */
+  .pa-contra {
+    padding: 72px 80px;
+    background: var(--gray-1);
+    border-bottom: 1px solid var(--border);
+  }
+  .pa-contra-list {
+    list-style: none;
+    max-width: 800px;
+  }
+  .pa-contra-list li {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.75;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    padding-left: 24px;
+    position: relative;
+  }
+  .pa-contra-list li::before {
+    content: '';
+    position: absolute; left: 0; top: 22px;
+    width: 8px; height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+  }
+
+  /* ── SOBRE O AUTOR ───────────────────────── */
+  .pa-autor {
+    padding: 72px 80px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pa-autor-text {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.85;
+    max-width: 800px;
+  }
+
+  /* ── CTA ─────────────────────────────────── */
+  .pa-cta {
+    padding: 80px;
+    background: var(--red);
+    text-align: center;
+  }
+  .pa-cta-title {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .pa-cta-sub {
+    font-size: 16px;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 32px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+  }
+  .pa-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: #fff;
+    color: var(--red);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .pa-cta-btn:hover {
+    background: var(--gray-1);
+    transform: translateY(-2px);
+  }
+
+  /* ── RESPONSIVE ──────────────────────────── */
+  @media (max-width: 1100px) {
+    .pa-hero-content { padding: 0 48px 48px; }
+    .pa-back { padding: 24px 48px; }
+    .pa-info { padding: 56px 48px; grid-template-columns: 1fr; gap: 48px; }
+    .pa-contra,
+    .pa-autor { padding: 56px 48px; }
+  }
+  @media (max-width: 768px) {
+    .pa-hero-content { padding: 0 24px 36px; }
+    .pa-back { padding: 20px 24px; }
+    .pa-info { padding: 40px 24px; }
+    .pa-contra,
+    .pa-autor { padding: 40px 24px; }
+    .pa-cta { padding: 60px 24px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="page-pa-detalhe">
+
+  <!-- ── HERO ────────────────────────────────── -->
+  <section class="pa-hero">
+    {% if projeto.imagem %}
+    <div class="pa-hero-img-wrap">
+      <img src="{{ projeto.imagem.url }}" alt="{{ projeto.titulo }}">
+      <div class="pa-hero-overlay"></div>
+    </div>
+    {% else %}
+    <div class="pa-hero-noposter"></div>
+    {% endif %}
+    <div class="pa-hero-content">
+      <span class="pa-hero-badge reveal">{{ projeto.get_tipo_display }}</span>
+      <h1 class="pa-hero-title reveal">{{ projeto.titulo }}</h1>
+    </div>
+  </section>
+
+  <!-- ── BACK ────────────────────────────────── -->
+  <a href="{% url 'core:pre_aprovados' %}" class="pa-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Voltar para pré-aprovados
+  </a>
+
+  <!-- ── INFO ────────────────────────────────── -->
+  <div class="pa-info reveal">
+    <div>
+      <div class="pa-info-meta">
+        <span class="pa-info-tag accent">Pronac {{ projeto.pronac }}</span>
+        <span class="pa-info-tag">{{ projeto.valor }}</span>
+        {% if projeto.duracao %}<span class="pa-info-tag">{{ projeto.duracao }}</span>{% endif %}
+        <span class="pa-info-tag">Art. 18 — Lei Rouanet</span>
+      </div>
+      <p class="pa-info-desc">{{ projeto.descricao }}</p>
+    </div>
+    {% if projeto.conceito %}
+    <div>
+      <h2 class="pa-conceito-title">Conceito</h2>
+      <div class="pa-conceito-text">{{ projeto.conceito|linebreaksbr }}</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ── CONTRAPARTIDAS ──────────────────────── -->
+  {% if projeto.contrapartidas %}
+  <section class="pa-contra reveal">
+    <h2 class="pa-contra-title">Contrapartidas</h2>
+    <ul class="pa-contra-list">
+      {% for item in projeto.contrapartidas.splitlines %}
+      {% if item.strip %}
+      <li>{{ item }}</li>
+      {% endif %}
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <!-- ── SOBRE O AUTOR ───────────────────────── -->
+  {% if projeto.sobre_autor %}
+  <section class="pa-autor reveal">
+    <h2 class="pa-autor-title">Sobre o Autor</h2>
+    <div class="pa-autor-text">{{ projeto.sobre_autor|linebreaksbr }}</div>
+  </section>
+  {% endif %}
+
+  <!-- ── CTA ─────────────────────────────────── -->
+  <section class="pa-cta">
+    <h2 class="pa-cta-title reveal">Interesse neste projeto?</h2>
+    <p class="pa-cta-sub reveal">Este projeto está aprovado e pronto para captação via Lei Rouanet com 100% de dedução fiscal.</p>
+    <a href="{% url 'core:contato' %}" class="pa-cta-btn reveal">Fale Conosco →</a>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+{% endblock %}
