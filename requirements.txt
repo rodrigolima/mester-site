@@ -2,3 +2,5 @@ Django>=5.2,<6.0
 Pillow>=10.0
 gunicorn>=22.0
 whitenoise>=6.5
+django-admin-sortable2>=2.3
+django-image-uploader-widget>=1.1

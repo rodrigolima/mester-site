@@ -23,6 +23,8 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 INSTALLED_APPS = [
     'core',
+    'adminsortable2',
+    'image_uploader_widget',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

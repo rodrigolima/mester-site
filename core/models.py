@@ -94,7 +94,7 @@ class FotoLivro(models.Model):
     imagem = models.ImageField(
         'Imagem',
         upload_to='livros/fotos/',
-        help_text='Foto do livro (páginas, detalhes, etc).',
+        help_text='Foto do livro para o mosaico (ambientes, detalhes, etc).',
     )
     legenda = models.CharField('Legenda', max_length=300, blank=True)
     ordem = models.PositiveIntegerField('Ordem', default=0)
@@ -106,6 +106,29 @@ class FotoLivro(models.Model):
 
     def __str__(self):
         return f'{self.livro.titulo} — Foto {self.ordem}'
+
+
+class PaginaLivro(models.Model):
+    livro = models.ForeignKey(
+        Livro,
+        on_delete=models.CASCADE,
+        related_name='paginas',
+        verbose_name='Livro',
+    )
+    imagem = models.ImageField(
+        'Imagem da Página',
+        upload_to='livros/paginas/',
+        help_text='Scan ou foto da página do livro. Recomendado: proporção da página real (ex: A4).',
+    )
+    ordem = models.PositiveIntegerField('Ordem', default=0)
+
+    class Meta:
+        ordering = ['ordem']
+        verbose_name = 'Página do Livro'
+        verbose_name_plural = 'Páginas do Livro'
+
+    def __str__(self):
+        return f'{self.livro.titulo} — Página {self.ordem}'
 
 
 class Projeto(models.Model):

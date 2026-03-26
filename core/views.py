@@ -61,7 +61,7 @@ def audiovisual(request):
 
 
 def livros(request):
-    todos = Livro.objects.filter(ativo=True).prefetch_related('fotos')
+    todos = Livro.objects.filter(ativo=True).prefetch_related('fotos', 'paginas')
     livro_destaque = todos.filter(destaque=True).first() or todos.first()
     outros_livros  = todos.exclude(pk=livro_destaque.pk) if livro_destaque else todos
     return render(request, 'core/livros.html', {
