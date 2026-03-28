@@ -1,0 +1,720 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Documentários — Mester Comunicação{% endblock %}
+
+{% block extra_css %}
+<style>
+  #page-documentarios {
+    background: #080808;
+    color: #EDE9E3;
+  }
+
+  /* ── HERO VIDEO ────────────────────────────── */
+  .dc-hero {
+    position: relative;
+    height: 85vh;
+    min-height: 520px;
+    overflow: hidden;
+    background: #000;
+  }
+  .dc-hero-video-bg {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 177.78vh;
+    min-height: 56.25vw;
+    width: 100%; height: 100%;
+    border: 0;
+    z-index: 0;
+    pointer-events: none;
+    filter: brightness(0.5);
+  }
+  .dc-hero-thumb {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.45);
+    z-index: 0;
+    animation: dcKenBurns 18s ease-in-out infinite alternate;
+    transform-origin: center center;
+  }
+  @keyframes dcKenBurns {
+    from { transform: scale(1); }
+    to   { transform: scale(1.06); }
+  }
+  .dc-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(8,8,8,0.97) 0%,
+      rgba(8,8,8,0.35) 50%,
+      rgba(8,8,8,0.12) 100%
+    );
+    z-index: 1;
+  }
+  .dc-hero-content {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 0 80px 72px;
+    z-index: 3;
+    max-width: 900px;
+  }
+  .dc-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 24px;
+  }
+  .dc-hero-eyebrow::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--red);
+  }
+  .dc-hero-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5.5vw, 72px);
+    font-weight: 500;
+    color: #EDE9E3;
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+  .dc-hero-desc {
+    font-size: 16px;
+    color: rgba(237,233,227,0.55);
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: 28px;
+  }
+  .dc-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .dc-hero-cat {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(237,233,227,0.4);
+  }
+  .dc-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border: 1px solid rgba(237,233,227,0.25);
+    color: #EDE9E3;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-family: var(--sans);
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .dc-hero-btn:hover {
+    background: var(--red);
+    border-color: var(--red);
+  }
+  .dc-hero-btn svg { width: 14px; height: 14px; }
+
+  /* ── BARRA DE FILMES (logo abaixo do hero) ── */
+  .dc-films-bar {
+    padding: 0 80px;
+    background: #080808;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .dc-films-header {
+    padding: 48px 0 32px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .dc-films-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 400;
+    color: #EDE9E3;
+    font-style: italic;
+  }
+  .dc-films-count {
+    font-size: 10px;
+    color: #333;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .dc-films-scroll {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 40px;
+    scroll-behavior: smooth;
+  }
+  .dc-films-scroll::-webkit-scrollbar { height: 2px; }
+  .dc-films-scroll::-webkit-scrollbar-thumb { background: var(--red); }
+
+  .dc-film-card {
+    flex-shrink: 0;
+    width: 260px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: border-color 0.3s;
+  }
+  .dc-film-card:hover { border-color: rgba(255,255,255,0.15); }
+  .dc-film-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+  .dc-film-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.7);
+    transition: transform 0.6s var(--ease), filter 0.5s;
+  }
+  .dc-film-card:hover .dc-film-thumb img {
+    transform: scale(1.05);
+    filter: brightness(0.85);
+  }
+  .dc-film-thumb-placeholder {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #111, #1c1c1c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dc-film-thumb-placeholder svg { width: 32px; height: 32px; color: rgba(255,255,255,0.07); }
+  .dc-film-play {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%) scale(0.75);
+    opacity: 0;
+    width: 44px; height: 44px;
+    border: 1.5px solid rgba(237,233,227,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s, transform 0.35s var(--ease);
+    z-index: 2;
+  }
+  .dc-film-play svg { width: 16px; height: 16px; color: #EDE9E3; margin-left: 2px; }
+  .dc-film-card:hover .dc-film-play { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  .dc-film-info { padding: 14px 16px; }
+  .dc-film-cat {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 5px;
+    display: block;
+  }
+  .dc-film-name {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 400;
+    color: #EDE9E3;
+    line-height: 1.25;
+  }
+
+  /* ── CASES / PROJETOS REALIZADOS ───────────── */
+  .dc-cases {
+    padding: 0 80px 120px;
+  }
+  .dc-cases-header {
+    padding: 56px 0 40px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 2px;
+  }
+  .dc-cases-title {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 500;
+    color: #EDE9E3;
+  }
+  .dc-cases-count {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(237,233,227,0.3);
+  }
+  .dc-cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1px;
+    background: rgba(255,255,255,0.04);
+  }
+  .dc-case-card {
+    position: relative;
+    background: #0E0E0C;
+    border: 1px solid rgba(255,255,255,0.04);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: border-color 0.3s var(--ease);
+  }
+  .dc-case-card:hover { border-color: rgba(255,255,255,0.12); }
+  .dc-case-img-wrap {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+  .dc-case-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease), filter 0.6s;
+    filter: brightness(0.75);
+  }
+  .dc-case-card:hover .dc-case-img {
+    transform: scale(1.04);
+    filter: brightness(0.9);
+  }
+  .dc-case-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(14,14,12,0.85) 0%, transparent 60%);
+  }
+  .dc-case-tipo {
+    position: absolute;
+    top: 16px; left: 16px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(8px);
+    color: var(--red);
+    border: 1px solid rgba(200,16,46,0.25);
+  }
+  .dc-case-body { padding: 24px 28px 28px; }
+  .dc-case-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: #EDE9E3;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .dc-case-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+    color: rgba(237,233,227,0.35);
+    letter-spacing: 1px;
+  }
+  .dc-case-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .dc-case-noposter {
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #1a1a18, #0E0E0C);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dc-case-noposter svg { width: 48px; height: 48px; color: rgba(255,255,255,0.08); }
+
+  /* ── EMPTY STATE ───────────────────────────── */
+  .dc-empty {
+    padding: 160px 80px;
+    text-align: center;
+  }
+  .dc-empty-title {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 500;
+    color: #EDE9E3;
+    margin-bottom: 16px;
+  }
+  .dc-empty-text {
+    font-size: 15px;
+    color: rgba(237,233,227,0.4);
+    max-width: 440px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  /* ── VIDEO MODAL ───────────────────────────── */
+  .v-modal {
+    position: fixed;
+    inset: 0; z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+  .v-modal.open { display: flex; }
+  .v-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.96);
+    cursor: pointer;
+  }
+  .v-modal-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1100px;
+    animation: vModalIn 0.35s var(--ease);
+  }
+  @keyframes vModalIn {
+    from { opacity: 0; transform: scale(0.96) translateY(16px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .v-modal-player {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    background: #000;
+  }
+  .v-modal-player iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    border: none;
+  }
+  .v-modal-info {
+    padding: 28px 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+  }
+  .v-modal-text { flex: 1; }
+  .v-modal-cat {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .v-modal-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 500;
+    color: #EDE9E3;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+  .v-modal-desc {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.8;
+  }
+  .v-modal-close {
+    flex-shrink: 0;
+    width: 48px; height: 48px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #EDE9E3;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .v-modal-close:hover {
+    background: rgba(200,16,46,0.2);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* ── HERO NO-POSTER FALLBACK ───────────────── */
+  .dc-hero-noposter {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1a18, #080808);
+  }
+
+  /* ── RESPONSIVE ────────────────────────────── */
+  @media (max-width: 1100px) {
+    .dc-hero-content { padding: 0 48px 56px; }
+    .dc-films-bar { padding: 0 48px; }
+    .dc-cases { padding: 0 48px 80px; }
+  }
+  @media (max-width: 768px) {
+    .dc-hero { height: 70vh; min-height: 400px; }
+    .dc-hero-content { padding: 0 24px 40px; }
+    .dc-films-bar { padding: 0 24px; }
+    .dc-film-card { width: 220px; }
+    .dc-cases { padding: 0 24px 60px; }
+    .dc-cases-grid { grid-template-columns: 1fr; }
+    .dc-empty { padding: 100px 24px; }
+    .v-modal { padding: 0; }
+    .v-modal-content { max-height: 100vh; overflow-y: auto; }
+    .v-modal-info { flex-direction: column; gap: 16px; padding: 20px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="page-documentarios">
+
+  {% if video_hero or projeto_destaque %}
+
+  <!-- ── HERO (vídeo em destaque ou projeto em destaque) ──── -->
+  <section class="dc-hero">
+    {% if video_hero and video_hero.bunny_embed_url %}
+      <iframe class="dc-hero-video-bg"
+              src="{{ video_hero.bunny_embed_url }}?autoplay=true&muted=true&loop=true&controls=false&background=true&preload=true"
+              allow="autoplay" allowfullscreen></iframe>
+      <div class="dc-hero-overlay"></div>
+      <div class="dc-hero-content">
+        <div class="dc-hero-eyebrow reveal">Documentários</div>
+        <h1 class="dc-hero-title reveal">{{ video_hero.titulo }}</h1>
+        <div class="dc-hero-actions reveal">
+          <button class="dc-hero-btn"
+                  data-embed="{{ video_hero.bunny_embed_url }}"
+                  data-titulo="{{ video_hero.titulo }}"
+                  data-descricao="{{ video_hero.descricao }}"
+                  data-categoria="{{ video_hero.get_categoria_display }}"
+                  onclick="openVideoModal(this)">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="currentColor"/></svg>
+            Assistir
+          </button>
+          <span class="dc-hero-cat">{{ video_hero.get_categoria_display }}</span>
+        </div>
+      </div>
+    {% elif video_hero and video_hero.thumbnail %}
+      <img class="dc-hero-thumb" src="{{ video_hero.thumbnail.url }}" alt="{{ video_hero.titulo }}">
+      <div class="dc-hero-overlay"></div>
+      <div class="dc-hero-content">
+        <div class="dc-hero-eyebrow reveal">Documentários</div>
+        <h1 class="dc-hero-title reveal">{{ video_hero.titulo }}</h1>
+        <div class="dc-hero-actions reveal">
+          <button class="dc-hero-btn"
+                  data-embed="{{ video_hero.bunny_embed_url }}"
+                  data-titulo="{{ video_hero.titulo }}"
+                  data-descricao="{{ video_hero.descricao }}"
+                  data-categoria="{{ video_hero.get_categoria_display }}"
+                  onclick="openVideoModal(this)">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="currentColor"/></svg>
+            Assistir
+          </button>
+          <span class="dc-hero-cat">{{ video_hero.get_categoria_display }}</span>
+        </div>
+      </div>
+    {% elif projeto_destaque %}
+      {% if projeto_destaque.poster %}
+        <img src="{{ projeto_destaque.poster.url }}" alt="{{ projeto_destaque.titulo }}" class="dc-hero-thumb">
+      {% else %}
+        <div class="dc-hero-noposter"></div>
+      {% endif %}
+      <div class="dc-hero-overlay"></div>
+      <div class="dc-hero-content">
+        <div class="dc-hero-eyebrow reveal">Documentários</div>
+        <h1 class="dc-hero-title reveal">{{ projeto_destaque.titulo }}</h1>
+        <p class="dc-hero-desc reveal">{{ projeto_destaque.descricao|truncatewords:30 }}</p>
+        <div class="dc-hero-actions reveal">
+          <a href="{{ projeto_destaque.get_absolute_url }}" class="dc-hero-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Ver Projeto
+          </a>
+          <span class="dc-hero-cat">{{ projeto_destaque.get_tipo_display }} &middot; {{ projeto_destaque.ano|default:"" }}</span>
+        </div>
+      </div>
+    {% endif %}
+  </section>
+
+  <!-- ── BARRA DE FILMES (logo abaixo do hero) ─────────────── -->
+  {% if outros_videos %}
+  <section class="dc-films-bar">
+    <div class="dc-films-header reveal">
+      <h2 class="dc-films-title">Filmes</h2>
+      <span class="dc-films-count">{{ outros_videos.count|add:1 }} produções</span>
+    </div>
+    <div class="dc-films-scroll">
+      {% for video in outros_videos %}
+      <div class="dc-film-card reveal"
+           style="transition-delay: {{ forloop.counter0 }}00ms"
+           data-embed="{{ video.bunny_embed_url }}"
+           data-titulo="{{ video.titulo }}"
+           data-descricao="{{ video.descricao }}"
+           data-categoria="{{ video.get_categoria_display }}"
+           onclick="openVideoModal(this)">
+        <div class="dc-film-thumb">
+          {% if video.thumbnail %}
+            <img src="{{ video.thumbnail.url }}" alt="{{ video.titulo }}" loading="lazy">
+          {% else %}
+            <div class="dc-film-thumb-placeholder">
+              <svg viewBox="0 0 48 48" fill="none">
+                <rect x="4" y="8" width="40" height="32" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M20 18l10 6-10 6V18z" fill="currentColor"/>
+              </svg>
+            </div>
+          {% endif %}
+          <div class="dc-film-play">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="dc-film-info">
+          <span class="dc-film-cat">{{ video.get_categoria_display }}</span>
+          <h3 class="dc-film-name">{{ video.titulo }}</h3>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- ── PROJETOS REALIZADOS ─────────────────────────────────── -->
+  {% if outros_projetos or projeto_destaque %}
+  <section class="dc-cases">
+    <div class="dc-cases-header reveal">
+      <h2 class="dc-cases-title">Projetos realizados</h2>
+      {% with total=outros_projetos.count|add:1 %}
+      <span class="dc-cases-count">{{ total }} projeto{{ total|pluralize:"s" }}</span>
+      {% endwith %}
+    </div>
+    <div class="dc-cases-grid">
+      {% if projeto_destaque %}
+      <a href="{{ projeto_destaque.get_absolute_url }}" class="dc-case-card reveal">
+        {% if projeto_destaque.poster %}
+        <div class="dc-case-img-wrap">
+          <img src="{{ projeto_destaque.poster.url }}" alt="{{ projeto_destaque.titulo }}" class="dc-case-img">
+          <div class="dc-case-overlay"></div>
+          <span class="dc-case-tipo">{{ projeto_destaque.get_tipo_display }}</span>
+        </div>
+        {% else %}
+        <div class="dc-case-noposter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        </div>
+        {% endif %}
+        <div class="dc-case-body">
+          <h3 class="dc-case-title">{{ projeto_destaque.titulo }}</h3>
+          <div class="dc-case-meta">
+            {% if projeto_destaque.ano %}<span>{{ projeto_destaque.ano }}</span>{% endif %}
+            {% if projeto_destaque.duracao %}<span>{{ projeto_destaque.duracao }}</span>{% endif %}
+            <span>{{ projeto_destaque.get_categoria_display }}</span>
+          </div>
+        </div>
+      </a>
+      {% endif %}
+      {% for p in outros_projetos %}
+      <a href="{{ p.get_absolute_url }}" class="dc-case-card reveal" style="transition-delay:{{ forloop.counter0 }}00ms">
+        {% if p.poster %}
+        <div class="dc-case-img-wrap">
+          <img src="{{ p.poster.url }}" alt="{{ p.titulo }}" class="dc-case-img" loading="lazy">
+          <div class="dc-case-overlay"></div>
+          <span class="dc-case-tipo">{{ p.get_tipo_display }}</span>
+        </div>
+        {% else %}
+        <div class="dc-case-noposter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        </div>
+        {% endif %}
+        <div class="dc-case-body">
+          <h3 class="dc-case-title">{{ p.titulo }}</h3>
+          <div class="dc-case-meta">
+            {% if p.ano %}<span>{{ p.ano }}</span>{% endif %}
+            {% if p.duracao %}<span>{{ p.duracao }}</span>{% endif %}
+            <span>{{ p.get_categoria_display }}</span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% else %}
+  <!-- ── EMPTY STATE ───────────────────────────── -->
+  <section class="dc-empty">
+    <div class="dc-hero-eyebrow reveal" style="justify-content:center; margin-bottom:32px;">Documentários</div>
+    <h1 class="dc-empty-title reveal">Em breve</h1>
+    <p class="dc-empty-text reveal">Nossos documentários serão exibidos aqui em breve. Enquanto isso, conheça nossos projetos disponíveis para patrocínio.</p>
+    <a href="{% url 'core:projetos' %}" class="dc-hero-btn reveal" style="margin-top:40px;">Ver Projetos →</a>
+  </section>
+  {% endif %}
+
+  <!-- ── VIDEO MODAL ───────────────────────────── -->
+  <div class="v-modal" id="videoModal">
+    <div class="v-modal-backdrop" onclick="closeVideoModal()"></div>
+    <div class="v-modal-content">
+      <div class="v-modal-player">
+        <iframe id="modalIframe" src=""
+                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen></iframe>
+      </div>
+      <div class="v-modal-info">
+        <div class="v-modal-text">
+          <div class="v-modal-cat" id="modalCat"></div>
+          <h2 class="v-modal-title" id="modalTitle"></h2>
+          <p class="v-modal-desc" id="modalDesc"></p>
+        </div>
+        <button class="v-modal-close" onclick="closeVideoModal()" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // ── VIDEO MODAL ─────────────────────────────────────────────
+  const modal = document.getElementById('videoModal');
+  const modalIframe = document.getElementById('modalIframe');
+
+  function openVideoModal(card) {
+    const embedUrl = card.dataset.embed;
+    if (!embedUrl) return;
+    const base = embedUrl
+      .split('?')[0]
+      .replace('player.mediadelivery.net/play/', 'iframe.mediadelivery.net/embed/');
+    modalIframe.src = base + '?autoplay=true';
+    document.getElementById('modalCat').textContent   = card.dataset.categoria;
+    document.getElementById('modalTitle').textContent = card.dataset.titulo;
+    document.getElementById('modalDesc').textContent  = card.dataset.descricao;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeVideoModal() {
+    modal.classList.remove('open');
+    modalIframe.src = '';
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeVideoModal();
+  });
+
+  // ── REVEAL ──────────────────────────────────────────────────
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+{% endblock %}

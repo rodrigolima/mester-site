@@ -1,0 +1,87 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Educação — Mester Comunicação{% endblock %}
+
+{% block extra_css %}
+<style>
+  #page-educacao {
+    padding: 140px 80px 112px;
+    background: var(--white);
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 1280px;
+  }
+  .edu-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.08;
+    margin-bottom: 24px;
+  }
+  .edu-lead {
+    font-size: 17px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    max-width: 640px;
+    margin-bottom: 48px;
+  }
+  .edu-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: var(--red-light);
+    border: 1px solid rgba(200,16,46,0.2);
+  }
+  .edu-badge-dot {
+    width: 8px; height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .edu-badge-text {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  @media (max-width: 768px) {
+    #page-educacao { padding: 100px 24px 60px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<main id="page-educacao">
+  <div class="s-tag reveal"><span class="s-rule"></span><span class="s-lbl">Educação</span></div>
+  <h1 class="edu-title reveal">Conteúdo educacional<br>com impacto.</h1>
+  <p class="edu-lead reveal">A Mester desenvolve projetos educacionais que combinam rigor acadêmico com linguagem acessível, contribuindo para a formação cultural e ambiental de comunidades e instituições.</p>
+  <div class="edu-badge reveal">
+    <span class="edu-badge-dot"></span>
+    <span class="edu-badge-text">Em breve</span>
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+{% endblock %}

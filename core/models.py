@@ -70,6 +70,11 @@ class Livro(models.Model):
     )
     ano = models.PositiveIntegerField('Ano de publicação', blank=True, null=True)
     autor = models.CharField('Autor(es)', max_length=300, blank=True)
+    link_vendas = models.URLField(
+        'Link de vendas',
+        blank=True,
+        help_text='URL para compra do livro (e-commerce, Amazon, etc).',
+    )
     destaque = models.BooleanField('Destaque na home', default=False)
     ativo = models.BooleanField('Ativo', default=True)
     ordem = models.PositiveIntegerField('Ordem', default=0)
@@ -180,6 +185,8 @@ class Projeto(models.Model):
         help_text='URL de embed do Bunny Stream para o filme do projeto.',
     )
     patrocinador = models.CharField('Patrocinador', max_length=300, blank=True)
+    is_serie = models.BooleanField('É uma série', default=False,
+        help_text='Marque se este projeto é uma série com múltiplos episódios.')
     destaque = models.BooleanField('Destaque', default=False)
     ativo = models.BooleanField('Ativo', default=True)
     ordem = models.PositiveIntegerField('Ordem', default=0)
@@ -194,7 +201,7 @@ class Projeto(models.Model):
         return self.titulo
 
     def get_absolute_url(self):
-        return reverse('core:projeto_detalhe', kwargs={'slug': self.slug})
+        return reverse('core:documentario_detalhe', kwargs={'slug': self.slug})
 
 
 class FotoProjeto(models.Model):
@@ -219,6 +226,38 @@ class FotoProjeto(models.Model):
 
     def __str__(self):
         return f'{self.projeto.titulo} — Foto {self.ordem}'
+
+
+class Episodio(models.Model):
+    projeto = models.ForeignKey(
+        Projeto,
+        on_delete=models.CASCADE,
+        related_name='episodios',
+        verbose_name='Projeto (Série)',
+    )
+    titulo = models.CharField('Título do Episódio', max_length=200)
+    descricao = models.TextField('Descrição', blank=True)
+    bunny_embed_url = models.URLField(
+        'URL do Player Bunny (iframe)',
+        blank=True,
+        help_text='URL de embed do Bunny Stream para este episódio.',
+    )
+    thumbnail = models.ImageField(
+        'Thumbnail',
+        upload_to='projetos/episodios/',
+        blank=True,
+        help_text='Imagem de capa do episódio. Recomendado: 16:9.',
+    )
+    duracao = models.CharField('Duração', max_length=50, blank=True)
+    ordem = models.PositiveIntegerField('Ordem', default=0)
+
+    class Meta:
+        ordering = ['ordem']
+        verbose_name = 'Episódio'
+        verbose_name_plural = 'Episódios'
+
+    def __str__(self):
+        return f'{self.projeto.titulo} — Ep. {self.ordem}: {self.titulo}'
 
 
 class ProjetoPreAprovado(models.Model):
@@ -274,4 +313,4 @@ class ProjetoPreAprovado(models.Model):
         return self.titulo
 
     def get_absolute_url(self):
-        return reverse('core:pre_aprovado_detalhe', kwargs={'slug': self.slug})
+        return reverse('core:projeto_detalhe', kwargs={'slug': self.slug})

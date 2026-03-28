@@ -5,13 +5,19 @@ app_name = 'core'
 
 urlpatterns = [
     path('', views.home, name='home'),
+    # PROJETOS: conteudo de pre-aprovados (projetos para patrocinio)
     path('projetos/', views.projetos, name='projetos'),
     path('projetos/<slug:slug>/', views.projeto_detalhe, name='projeto_detalhe'),
-    path('pre-aprovados/', views.pre_aprovados, name='pre_aprovados'),
-    path('pre-aprovados/<slug:slug>/', views.pre_aprovado_detalhe, name='pre_aprovado_detalhe'),
-    path('audiovisual/', views.audiovisual, name='audiovisual'),
+    # DOCUMENTARIOS: cases realizados (antigo Projetos + Audiovisual unificados)
+    path('documentarios/', views.documentarios, name='documentarios'),
+    path('documentarios/<slug:slug>/', views.documentario_detalhe, name='documentario_detalhe'),
+    # LIVROS
     path('livros/', views.livros, name='livros'),
-    path('quem-somos/', views.quem_somos, name='quem_somos'),
+    # EDUCACAO
+    path('educacao/', views.educacao, name='educacao'),
+    # SOBRE (antigo Quem Somos)
+    path('sobre/', views.sobre, name='sobre'),
+    # CONTATO (movido para footer, mas pagina ainda existe)
     path('contato/', views.contato, name='contato'),
     path('privacidade/', views.privacidade, name='privacidade'),
 ]

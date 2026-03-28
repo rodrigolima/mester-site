@@ -4,7 +4,7 @@ from django.utils.html import format_html
 from adminsortable2.admin import SortableAdminBase
 from image_uploader_widget.admin import OrderedImageUploaderInline
 from image_uploader_widget.widgets import ImageUploaderWidget
-from .models import Video, Livro, FotoLivro, PaginaLivro, Projeto, FotoProjeto, ProjetoPreAprovado
+from .models import Video, Livro, FotoLivro, PaginaLivro, Projeto, FotoProjeto, Episodio, ProjetoPreAprovado
 
 
 @admin.register(Video)
@@ -49,8 +49,8 @@ class LivroAdmin(SortableAdminBase, admin.ModelAdmin):
         ('Informações', {
             'fields': ('titulo', 'subtitulo', 'descricao', 'categoria', 'autor', 'ano'),
         }),
-        ('Capa', {
-            'fields': ('capa',),
+        ('Capa e Vendas', {
+            'fields': ('capa', 'link_vendas'),
         }),
         ('Publicação', {
             'fields': ('destaque', 'ativo', 'ordem'),
@@ -86,15 +86,24 @@ class FotoProjetoInline(OrderedImageUploaderInline):
     verbose_name_plural = '📷 Fotos do projeto'
 
 
+class EpisodioInline(admin.StackedInline):
+    model = Episodio
+    extra = 0
+    fields = ('titulo', 'descricao', 'bunny_embed_url', 'thumbnail', 'duracao', 'ordem')
+    ordering = ('ordem',)
+    verbose_name = 'Episódio'
+    verbose_name_plural = '🎬 Episódios da série'
+
+
 @admin.register(Projeto)
 class ProjetoAdmin(SortableAdminBase, admin.ModelAdmin):
-    list_display = ('titulo', 'tipo', 'categoria', 'ano', 'destaque', 'ativo', 'ordem')
+    list_display = ('titulo', 'tipo', 'categoria', 'ano', 'is_serie', 'destaque', 'ativo', 'ordem')
     list_editable = ('destaque', 'ativo', 'ordem')
-    list_filter = ('tipo', 'categoria', 'destaque', 'ativo')
+    list_filter = ('tipo', 'categoria', 'is_serie', 'destaque', 'ativo')
     search_fields = ('titulo', 'descricao', 'sinopse', 'diretor', 'produtor')
     prepopulated_fields = {'slug': ('titulo',)}
     ordering = ('ordem', '-criado_em')
-    inlines = [FotoProjetoInline]
+    inlines = [EpisodioInline, FotoProjetoInline]
 
 
 @admin.register(ProjetoPreAprovado)

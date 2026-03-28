@@ -1,0 +1,801 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ projeto.titulo }} — Mester Comunicação{% endblock %}
+
+{% block extra_css %}
+<style>
+  #page-projeto-detalhe {
+    background: #080808;
+    color: #EDE9E3;
+  }
+
+  /* ── HERO / VIDEO ────────────────────────── */
+  .pd-hero {
+    position: relative;
+    width: 100%;
+    background: #000;
+    padding-top: 84px;
+  }
+  .pd-hero-video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 80vh;
+    overflow: hidden;
+  }
+  .pd-hero-video iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .pd-hero-poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 80vh;
+    overflow: hidden;
+  }
+  .pd-hero-poster img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    animation: pdKenBurns 20s ease-in-out infinite alternate;
+  }
+  @keyframes pdKenBurns {
+    from { transform: scale(1);    }
+    to   { transform: scale(1.05); }
+  }
+  .pd-hero-poster-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(8,8,8,0.9) 0%,
+      rgba(8,8,8,0.2) 50%,
+      transparent 100%
+    );
+  }
+  .pd-hero-noposter {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 50vh;
+    background: linear-gradient(135deg, #1a1a18, #080808);
+  }
+
+  /* ── BACK LINK ───────────────────────────── */
+  .pd-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 32px 80px 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(237,233,227,0.35);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .pd-back:hover { color: var(--red); }
+  .pd-back svg { width: 16px; height: 16px; }
+
+  /* ── HEADER ──────────────────────────────── */
+  .pd-header {
+    padding: 48px 80px 0;
+    max-width: 1280px;
+  }
+  .pd-tipo-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: rgba(200,16,46,0.1);
+    border: 1px solid rgba(200,16,46,0.25);
+    color: var(--red);
+    margin-bottom: 20px;
+  }
+  .pd-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 4.5vw, 60px);
+    font-weight: 500;
+    color: #EDE9E3;
+    line-height: 1.08;
+    margin-bottom: 16px;
+  }
+  .pd-desc {
+    font-size: 17px;
+    color: rgba(237,233,227,0.5);
+    line-height: 1.8;
+    max-width: 700px;
+  }
+
+  /* ── FICHA TECNICA ───────────────────────── */
+  .pd-ficha {
+    padding: 72px 80px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: 56px;
+  }
+  .pd-ficha-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: #EDE9E3;
+    margin-bottom: 40px;
+  }
+  .pd-ficha-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: rgba(255,255,255,0.04);
+    max-width: 1000px;
+  }
+  .pd-ficha-item {
+    background: #080808;
+    padding: 20px 24px;
+  }
+  .pd-ficha-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(237,233,227,0.3);
+    margin-bottom: 6px;
+  }
+  .pd-ficha-value {
+    font-size: 16px;
+    color: #EDE9E3;
+    line-height: 1.4;
+  }
+
+  /* ── SINOPSE ─────────────────────────────── */
+  .pd-sinopse {
+    padding: 72px 80px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .pd-sinopse-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: #EDE9E3;
+    margin-bottom: 32px;
+  }
+  .pd-sinopse-text {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 400;
+    color: rgba(237,233,227,0.65);
+    line-height: 1.9;
+    max-width: 800px;
+  }
+
+  /* ── GALERIA ─────────────────────────────── */
+  .pd-galeria {
+    padding: 72px 80px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .pd-galeria-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: #EDE9E3;
+    margin-bottom: 40px;
+  }
+  .pd-galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 4px;
+  }
+  .pd-galeria-item {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+  }
+  .pd-galeria-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--ease);
+    filter: brightness(0.85);
+  }
+  .pd-galeria-item:hover img {
+    transform: scale(1.04);
+    filter: brightness(1);
+  }
+  .pd-galeria-item .pd-galeria-legenda {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 12px 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .pd-galeria-item:hover .pd-galeria-legenda {
+    opacity: 1;
+  }
+
+  /* ── LIGHTBOX ────────────────────────────── */
+  .pd-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(20px);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .pd-lightbox.active {
+    display: flex;
+  }
+  .pd-lightbox img {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+  }
+  .pd-lightbox-close {
+    position: absolute;
+    top: 24px; right: 32px;
+    width: 44px; height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background 0.2s;
+  }
+  .pd-lightbox-close:hover {
+    background: var(--red);
+  }
+
+  /* ── RELACIONADOS ────────────────────────── */
+  .pd-relacionados {
+    padding: 72px 80px 100px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .pd-relacionados-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: #EDE9E3;
+    margin-bottom: 40px;
+  }
+  .pd-rel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1px;
+    background: rgba(255,255,255,0.04);
+  }
+  .pd-rel-card {
+    background: #0E0E0C;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    overflow: hidden;
+    transition: border-color 0.3s;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .pd-rel-card:hover {
+    border-color: rgba(255,255,255,0.12);
+  }
+  .pd-rel-img {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+  .pd-rel-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.7);
+    transition: transform 0.5s var(--ease);
+  }
+  .pd-rel-card:hover .pd-rel-img img {
+    transform: scale(1.04);
+    filter: brightness(0.85);
+  }
+  .pd-rel-body {
+    padding: 20px 24px;
+  }
+  .pd-rel-body h3 {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 500;
+    color: #EDE9E3;
+    margin-bottom: 6px;
+  }
+  .pd-rel-body span {
+    font-size: 11px;
+    color: rgba(237,233,227,0.35);
+    letter-spacing: 1px;
+  }
+
+  /* ── EPISÓDIOS (séries) ──────────────────── */
+  .pd-episodios {
+    padding: 72px 80px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .pd-episodios-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: #EDE9E3;
+    margin-bottom: 40px;
+  }
+  .pd-ep-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .pd-ep-card {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    background: #0E0E0C;
+    border: 1px solid rgba(255,255,255,0.04);
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+  .pd-ep-card:hover { border-color: rgba(255,255,255,0.12); }
+  .pd-ep-thumb {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: #111;
+  }
+  .pd-ep-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.75);
+    transition: transform 0.5s var(--ease), filter 0.4s;
+  }
+  .pd-ep-card:hover .pd-ep-thumb img {
+    transform: scale(1.04);
+    filter: brightness(0.9);
+  }
+  .pd-ep-play {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%) scale(0.8);
+    opacity: 0;
+    width: 44px; height: 44px;
+    border: 1.5px solid rgba(237,233,227,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 2;
+  }
+  .pd-ep-play svg { width: 16px; height: 16px; color: #EDE9E3; margin-left: 2px; }
+  .pd-ep-card:hover .pd-ep-play { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  .pd-ep-thumb-empty {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #111, #1c1c1c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pd-ep-thumb-empty svg { width: 28px; height: 28px; color: rgba(255,255,255,0.07); }
+  .pd-ep-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .pd-ep-num {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .pd-ep-name {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 400;
+    color: #EDE9E3;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .pd-ep-desc {
+    font-size: 14px;
+    color: rgba(237,233,227,0.45);
+    line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pd-ep-dur {
+    margin-top: 10px;
+    font-size: 11px;
+    color: rgba(237,233,227,0.3);
+    letter-spacing: 1px;
+  }
+
+  /* ── EP VIDEO MODAL ────────────────────────── */
+  .pd-ep-modal {
+    position: fixed;
+    inset: 0; z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+  .pd-ep-modal.open { display: flex; }
+  .pd-ep-modal-bg {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.96);
+    cursor: pointer;
+  }
+  .pd-ep-modal-content {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 1100px;
+  }
+  .pd-ep-modal-player {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    background: #000;
+  }
+  .pd-ep-modal-player iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: none;
+  }
+  .pd-ep-modal-info {
+    padding: 24px 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+  }
+  .pd-ep-modal-text { flex: 1; }
+  .pd-ep-modal-ep {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--red); margin-bottom: 6px;
+  }
+  .pd-ep-modal-title {
+    font-family: var(--serif);
+    font-size: 24px; font-weight: 500;
+    color: #EDE9E3; line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .pd-ep-modal-desc {
+    font-size: 14px; color: #555; line-height: 1.8;
+  }
+  .pd-ep-modal-close {
+    flex-shrink: 0;
+    width: 48px; height: 48px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #EDE9E3; cursor: pointer;
+    display: flex; align-items: center;
+    justify-content: center; font-size: 18px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .pd-ep-modal-close:hover {
+    background: rgba(200,16,46,0.2);
+    border-color: var(--red); color: var(--red);
+  }
+
+  @media (max-width: 768px) {
+    .pd-ep-card { grid-template-columns: 1fr; gap: 16px; }
+    .pd-ep-modal { padding: 0; }
+    .pd-ep-modal-info { flex-direction: column; gap: 16px; padding: 16px; }
+  }
+
+  /* ── RESPONSIVE ──────────────────────────── */
+  @media (max-width: 1100px) {
+    .pd-back { padding: 24px 48px 0; }
+    .pd-header { padding: 40px 48px 0; }
+    .pd-ficha,
+    .pd-sinopse,
+    .pd-episodios,
+    .pd-galeria,
+    .pd-relacionados { padding-left: 48px; padding-right: 48px; }
+  }
+  @media (max-width: 768px) {
+    .pd-back { padding: 20px 24px 0; }
+    .pd-header { padding: 32px 24px 0; }
+    .pd-ficha,
+    .pd-sinopse,
+    .pd-episodios,
+    .pd-galeria,
+    .pd-relacionados { padding-left: 24px; padding-right: 24px; }
+    .pd-ficha-grid { grid-template-columns: 1fr; }
+    .pd-galeria-grid { grid-template-columns: 1fr; }
+    .pd-rel-grid { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="page-projeto-detalhe">
+
+  <!-- ── HERO ────────────────────────────────── -->
+  <section class="pd-hero">
+    {% if projeto.bunny_embed_url %}
+      <div class="pd-hero-video">
+        <iframe src="{{ projeto.bunny_embed_url }}?autoplay=true&muted=true&preload=true"
+                loading="lazy"
+                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
+                allowfullscreen></iframe>
+      </div>
+    {% elif projeto.poster %}
+      <div class="pd-hero-poster">
+        <img src="{{ projeto.poster.url }}" alt="{{ projeto.titulo }}">
+        <div class="pd-hero-poster-overlay"></div>
+      </div>
+    {% else %}
+      <div class="pd-hero-noposter"></div>
+    {% endif %}
+  </section>
+
+  <!-- ── BACK ────────────────────────────────── -->
+  <a href="{% url 'core:documentarios' %}" class="pd-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Voltar para documentários
+  </a>
+
+  <!-- ── HEADER ──────────────────────────────── -->
+  <div class="pd-header reveal">
+    <span class="pd-tipo-badge">{{ projeto.get_tipo_display }}</span>
+    <h1 class="pd-title">{{ projeto.titulo }}</h1>
+    <p class="pd-desc">{{ projeto.descricao }}</p>
+  </div>
+
+  <!-- ── FICHA TECNICA ───────────────────────── -->
+  <section class="pd-ficha reveal">
+    <h2 class="pd-ficha-title">Ficha Técnica</h2>
+    <div class="pd-ficha-grid">
+      {% if projeto.diretor %}
+      <div class="pd-ficha-item">
+        <div class="pd-ficha-label">Direção</div>
+        <div class="pd-ficha-value">{{ projeto.diretor }}</div>
+      </div>
+      {% endif %}
+      {% if projeto.produtor %}
+      <div class="pd-ficha-item">
+        <div class="pd-ficha-label">Produção</div>
+        <div class="pd-ficha-value">{{ projeto.produtor }}</div>
+      </div>
+      {% endif %}
+      {% if projeto.fotografia %}
+      <div class="pd-ficha-item">
+        <div class="pd-ficha-label">Fotografia</div>
+        <div class="pd-ficha-value">{{ projeto.fotografia }}</div>
+      </div>
+      {% endif %}
+      {% if projeto.edicao %}
+      <div class="pd-ficha-item">
+        <div class="pd-ficha-label">Edição</div>
+        <div class="pd-ficha-value">{{ projeto.edicao }}</div>
+      </div>
+      {% endif %}
+      {% if projeto.trilha_sonora %}
+      <div class="pd-ficha-item">
+        <div class="pd-ficha-label">Trilha Sonora</div>
+        <div class="pd-ficha-value">{{ projeto.trilha_sonora }}</div>
+      </div>
+      {% endif %}
+      {% if projeto.ano %}
+      <div class="pd-ficha-item">
+        <div class="pd-ficha-label">Ano</div>
+        <div class="pd-ficha-value">{{ projeto.ano }}</div>
+      </div>
+      {% endif %}
+      {% if projeto.duracao %}
+      <div class="pd-ficha-item">
+        <div class="pd-ficha-label">Duração</div>
+        <div class="pd-ficha-value">{{ projeto.duracao }}</div>
+      </div>
+      {% endif %}
+      {% if projeto.formato %}
+      <div class="pd-ficha-item">
+        <div class="pd-ficha-label">Formato</div>
+        <div class="pd-ficha-value">{{ projeto.formato }}</div>
+      </div>
+      {% endif %}
+      {% if projeto.patrocinador %}
+      <div class="pd-ficha-item">
+        <div class="pd-ficha-label">Patrocinador</div>
+        <div class="pd-ficha-value">{{ projeto.patrocinador }}</div>
+      </div>
+      {% endif %}
+      <div class="pd-ficha-item">
+        <div class="pd-ficha-label">Categoria</div>
+        <div class="pd-ficha-value">{{ projeto.get_categoria_display }}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SINOPSE ─────────────────────────────── -->
+  {% if projeto.sinopse %}
+  <section class="pd-sinopse reveal">
+    <h2 class="pd-sinopse-title">Sinopse</h2>
+    <p class="pd-sinopse-text">{{ projeto.sinopse }}</p>
+  </section>
+  {% endif %}
+
+  <!-- ── EPISÓDIOS (séries) ──────────────────── -->
+  {% if episodios %}
+  <section class="pd-episodios reveal">
+    <h2 class="pd-episodios-title">Episódios</h2>
+    <div class="pd-ep-grid">
+      {% for ep in episodios %}
+      <div class="pd-ep-card"
+           data-embed="{{ ep.bunny_embed_url }}"
+           data-titulo="{{ ep.titulo }}"
+           data-descricao="{{ ep.descricao }}"
+           data-num="{{ forloop.counter }}"
+           onclick="openEpModal(this)">
+        <div class="pd-ep-thumb">
+          {% if ep.thumbnail %}
+            <img src="{{ ep.thumbnail.url }}" alt="{{ ep.titulo }}" loading="lazy">
+          {% else %}
+            <div class="pd-ep-thumb-empty">
+              <svg viewBox="0 0 48 48" fill="none">
+                <rect x="4" y="8" width="40" height="32" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M20 18l10 6-10 6V18z" fill="currentColor"/>
+              </svg>
+            </div>
+          {% endif %}
+          <div class="pd-ep-play">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="pd-ep-info">
+          <div class="pd-ep-num">Episódio {{ forloop.counter }}</div>
+          <h3 class="pd-ep-name">{{ ep.titulo }}</h3>
+          {% if ep.descricao %}<p class="pd-ep-desc">{{ ep.descricao }}</p>{% endif %}
+          {% if ep.duracao %}<div class="pd-ep-dur">{{ ep.duracao }}</div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- ── GALERIA ─────────────────────────────── -->
+  {% if fotos %}
+  <section class="pd-galeria reveal">
+    <h2 class="pd-galeria-title">Galeria</h2>
+    <div class="pd-galeria-grid">
+      {% for foto in fotos %}
+      <div class="pd-galeria-item" data-lightbox="{{ foto.imagem.url }}">
+        <img src="{{ foto.imagem.url }}" alt="{{ foto.legenda|default:projeto.titulo }}" loading="lazy">
+        {% if foto.legenda %}
+        <div class="pd-galeria-legenda">{{ foto.legenda }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- ── RELACIONADOS ────────────────────────── -->
+  {% if relacionados %}
+  <section class="pd-relacionados reveal">
+    <h2 class="pd-relacionados-title">Projetos relacionados</h2>
+    <div class="pd-rel-grid">
+      {% for rel in relacionados %}
+      <a href="{{ rel.get_absolute_url }}" class="pd-rel-card">
+        {% if rel.poster %}
+        <div class="pd-rel-img">
+          <img src="{{ rel.poster.url }}" alt="{{ rel.titulo }}" loading="lazy">
+        </div>
+        {% endif %}
+        <div class="pd-rel-body">
+          <h3>{{ rel.titulo }}</h3>
+          <span>{{ rel.get_tipo_display }} &middot; {{ rel.ano|default:"" }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- ── EPISODE MODAL ──────────────────────── -->
+  <div class="pd-ep-modal" id="epModal">
+    <div class="pd-ep-modal-bg" onclick="closeEpModal()"></div>
+    <div class="pd-ep-modal-content">
+      <div class="pd-ep-modal-player">
+        <iframe id="epIframe" src="" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="pd-ep-modal-info">
+        <div class="pd-ep-modal-text">
+          <div class="pd-ep-modal-ep" id="epModalNum"></div>
+          <h2 class="pd-ep-modal-title" id="epModalTitle"></h2>
+          <p class="pd-ep-modal-desc" id="epModalDesc"></p>
+        </div>
+        <button class="pd-ep-modal-close" onclick="closeEpModal()" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LIGHTBOX ────────────────────────────── -->
+  <div class="pd-lightbox" id="pdLightbox">
+    <button class="pd-lightbox-close" id="pdLightboxClose">&times;</button>
+    <img src="" alt="" id="pdLightboxImg">
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  /* ── Reveal on scroll ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ── Lightbox ── */
+  const lightbox = document.getElementById('pdLightbox');
+  const lightboxImg = document.getElementById('pdLightboxImg');
+  const lightboxClose = document.getElementById('pdLightboxClose');
+
+  document.querySelectorAll('.pd-galeria-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const src = item.dataset.lightbox;
+      if (src) {
+        lightboxImg.src = src;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  });
+
+  function closeLightbox() {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+    lightboxImg.src = '';
+  }
+
+  lightboxClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeLightbox();
+  });
+  lightbox.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeLightbox(); closeEpModal(); }
+  });
+
+  /* ── Episode Modal ── */
+  const epModal = document.getElementById('epModal');
+  const epIframe = document.getElementById('epIframe');
+
+  function openEpModal(card) {
+    const embedUrl = card.dataset.embed;
+    if (!embedUrl) return;
+    const base = embedUrl.split('?')[0]
+      .replace('player.mediadelivery.net/play/', 'iframe.mediadelivery.net/embed/');
+    epIframe.src = base + '?autoplay=true';
+    document.getElementById('epModalNum').textContent = 'Episódio ' + card.dataset.num;
+    document.getElementById('epModalTitle').textContent = card.dataset.titulo;
+    document.getElementById('epModalDesc').textContent = card.dataset.descricao;
+    epModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeEpModal() {
+    epModal.classList.remove('open');
+    epIframe.src = '';
+    document.body.style.overflow = '';
+  }
+</script>
+{% endblock %}

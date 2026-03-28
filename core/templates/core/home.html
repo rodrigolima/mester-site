@@ -386,38 +386,105 @@
   }
   .p-card:hover .p-card-img { filter: brightness(1); }
 
+  /* ── PORTFOLIO LINKS ────────────────────────── */
+  .portfolio-links {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+  .portfolio-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 22px;
+    text-decoration: none;
+    color: #9A9489;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: color 0.25s, background 0.25s, border-color 0.25s;
+  }
+  .portfolio-link svg {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    color: var(--red);
+    transition: color 0.25s;
+  }
+  .portfolio-link:hover {
+    color: #EDE9E3;
+    border-color: var(--red);
+    background: rgba(200,16,46,0.08);
+  }
+  .portfolio-link:hover svg { color: #EDE9E3; }
+
   /* ── PROJETOS APROVADOS CTA ─────────────────── */
   #aprovados-cta {
     background: var(--red);
-    padding: 64px 80px;
+    padding: 88px 80px;
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 40px;
+    gap: 48px;
     align-items: center;
     margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  #aprovados-cta::before {
+    content: '★';
+    position: absolute;
+    top: -40px; right: 60px;
+    font-size: 280px;
+    color: rgba(255,255,255,0.06);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .aprovados-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 20px;
+  }
+  .aprovados-eyebrow::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: rgba(255,255,255,0.4);
   }
   .aprovados-text h3 {
-    font-family: var(--serif); font-size: 28px;
+    font-family: var(--serif);
+    font-size: clamp(32px, 3.5vw, 48px);
     font-weight: 600; color: #fff;
-    margin-bottom: 8px; line-height: 1.2;
+    margin-bottom: 16px; line-height: 1.15;
+    letter-spacing: -0.01em;
   }
   .aprovados-text p {
-    font-size: 15px; color: rgba(255,255,255,0.75);
-    line-height: 1.7;
+    font-size: 16px; color: rgba(255,255,255,0.75);
+    line-height: 1.8;
+    max-width: 560px;
   }
   .aprovados-btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 14px 32px;
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 18px 40px;
     background: #fff; color: var(--red);
-    font-size: 13px; font-weight: 700;
-    letter-spacing: 1px; text-transform: uppercase;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
     text-decoration: none; white-space: nowrap;
-    transition: background 0.3s, transform 0.3s;
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   }
   .aprovados-btn:hover {
     background: var(--gray-1);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
   }
+  .aprovados-btn svg { width: 18px; height: 18px; }
 
   /* ── ESG / ACERVO ───────────────────────────── */
   #esg {
@@ -491,10 +558,10 @@
     .benefits-dark { padding: 56px 48px; }
     .benefits-header { grid-template-columns: 1fr; gap: 24px; }
     .esg-text { padding: 80px 48px; }
-    #aprovados-cta { padding: 48px; }
+    #aprovados-cta { padding: 72px 48px; }
   }
   @media (max-width: 768px) {
-    #aprovados-cta { padding: 40px 24px; grid-template-columns: 1fr; }
+    #aprovados-cta { padding: 56px 24px; grid-template-columns: 1fr; }
     #hero { padding: 100px 24px 60px; }
     .projects-grid { display: flex; flex-direction: column; }
     .p-card { min-height: 240px !important; }
@@ -629,10 +696,6 @@
           em projetos de<br>
           <em>impacto cultural.</em>
         </h1>
-        <div class="hero-scroll">
-          <div class="hero-scroll-line"></div>
-          <span>Scroll para explorar</span>
-        </div>
       </div>
 
       <div class="hero-right reveal" style="transition-delay:.12s">
@@ -643,12 +706,27 @@
 
   <!-- ── PROJETOS ──────────────────────────────── -->
   <section id="projetos" class="section">
-    <div class="s-tag reveal"><span class="s-num">01</span><span class="s-rule"></span><span class="s-lbl">Portfolio</span></div>
-    <h2 class="s-title reveal">Cases.</h2>
+    <div class="s-tag reveal"><span class="s-rule"></span><span class="s-lbl">Portfólio</span></div>
+    <h2 class="s-title reveal">Portfólio.</h2>
     <p class="s-lead reveal">Projetos que transformaram ideias em linguagem, memória e impacto cultural duradouro.</p>
 
+    <div class="portfolio-links reveal" style="transition-delay:.08s">
+      <a href="{% url 'core:documentarios' %}" class="portfolio-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Documentários
+      </a>
+      <a href="{% url 'core:livros' %}" class="portfolio-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h7v16H4z"/><path d="M11 4h7v16h-7"/></svg>
+        Livros
+      </a>
+      <a href="{% url 'core:educacao' %}" class="portfolio-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 3.58 3 8 3s6-1.34 6-3v-5"/></svg>
+        Educação
+      </a>
+    </div>
+
     <div class="projects-grid reveal" style="transition-delay:.1s">
-      <div class="p-card" onclick="window.location.href='{% url 'core:projeto_detalhe' 'culinaria-artesanato-baia-todos-santos' %}'">
+      <div class="p-card" onclick="window.location.href='{% url 'core:documentario_detalhe' 'culinaria-artesanato-baia-todos-santos' %}'">
         <div class="p-inner">
           <img src="{% static 'core/img/Baia_todos_Santos_18.jpg' %}" alt="Culinária e Artesanato — Baía de Todos os Santos" class="p-card-img">
         </div>
@@ -659,7 +737,7 @@
           <span class="p-cat">Documentário</span>
           <h3 class="p-title">Culinária e Artesanato — Baía de Todos os Santos</h3>
           <p class="p-desc">Documentário que explora a riqueza cultural, culinária e artesanal da região da Baía de Todos os Santos.</p>
-          <a href="{% url 'core:projeto_detalhe' 'culinaria-artesanato-baia-todos-santos' %}" class="p-cta">Ver projeto →</a>
+          <a href="{% url 'core:documentario_detalhe' 'culinaria-artesanato-baia-todos-santos' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
       <div class="p-card">
@@ -671,7 +749,7 @@
           <span class="p-cat">Editorial</span>
           <h3 class="p-title">Acervo Fotográfico Nacional</h3>
           <p class="p-desc">Livro de arte com distribuição para museus e bibliotecas públicas em todo o Brasil.</p>
-          <a href="{% url 'core:projetos' %}" class="p-cta">Ver projeto →</a>
+          <a href="{% url 'core:documentarios' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
       <div class="p-card">
@@ -683,7 +761,7 @@
           <span class="p-cat">Educacional</span>
           <h3 class="p-title">Plataforma de Ensino Criativo</h3>
           <p class="p-desc">Ecossistema digital de educação audiovisual para jovens criadores.</p>
-          <a href="{% url 'core:projetos' %}" class="p-cta">Ver projeto →</a>
+          <a href="{% url 'core:documentarios' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
       <div class="p-card">
@@ -695,7 +773,7 @@
           <span class="p-cat">Documentário</span>
           <h3 class="p-title">Memória Viva</h3>
           <p class="p-desc">Preservação de tradições em risco de desaparecimento através de linguagem audiovisual contemporânea.</p>
-          <a href="{% url 'core:projetos' %}" class="p-cta">Ver projeto →</a>
+          <a href="{% url 'core:documentarios' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
       <div class="p-card">
@@ -707,7 +785,7 @@
           <span class="p-cat">Branded Content</span>
           <h3 class="p-title">Território e Identidade</h3>
           <p class="p-desc">Série sobre diversidade cultural das regiões brasileiras para plataforma de streaming.</p>
-          <a href="{% url 'core:projetos' %}" class="p-cta">Ver projeto →</a>
+          <a href="{% url 'core:documentarios' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
       <div class="p-card">
@@ -719,15 +797,16 @@
           <span class="p-cat">ESG</span>
           <h3 class="p-title">Relatório de Impacto Cultural</h3>
           <p class="p-desc">Produção audiovisual e editorial de relatório de impacto para empresa do setor de energia.</p>
-          <a href="{% url 'core:projetos' %}" class="p-cta">Ver projeto →</a>
+          <a href="{% url 'core:documentarios' %}" class="p-cta">Ver projeto →</a>
         </div>
       </div>
     </div>
+
   </section>
 
   <!-- ── ABORDAGEM ─────────────────────────────── -->
   <section id="abordagem" class="section">
-    <div class="s-tag reveal"><span class="s-num">02</span><span class="s-rule"></span><span class="s-lbl">Abordagem</span></div>
+    <div class="s-tag reveal"><span class="s-rule"></span><span class="s-lbl">Abordagem</span></div>
     <h2 class="s-title reveal">Como trabalhamos.</h2>
     <p class="s-lead reveal">Da concepção à entrega — projetos com rigor criativo, domínio técnico e alinhamento estratégico para marcas e instituições.</p>
 
@@ -796,7 +875,7 @@
     <div class="benefits-dark reveal">
       <div class="benefits-header">
         <div>
-          <div class="s-tag"><span class="s-num">03</span><span class="s-rule"></span><span class="s-lbl" style="color:#555">Leis de Incentivo</span></div>
+          <div class="s-tag"><span class="s-rule"></span><span class="s-lbl" style="color:#555">Leis de Incentivo</span></div>
           <h2 class="s-title" style="color:#EDE9E3; margin-bottom:0">O caminho do<br>incentivo fiscal.</h2>
         </div>
         <p class="benefits-lead">As leis de incentivo à cultura permitem que empresas financiem projetos de alto valor com abatimento direto no Imposto de Renda — transformando obrigação fiscal em impacto real.</p>
@@ -854,10 +933,14 @@
   <div>
     <section id="aprovados-cta" class="reveal">
       <div class="aprovados-text">
-        <h3>projetos já aprovados, prontos para patrocínio.</h3>
-        <p>A Mester dispõe de documentários e livros de arte com aprovação no Art. 18 da Lei Rouanet. Sua empresa pode investir em cultura com dedução de até 100% do IR.</p>
+        <div class="aprovados-eyebrow">Lei Rouanet — Art. 18</div>
+        <h3>Projetos já aprovados,<br>prontos para patrocínio.</h3>
+        <p>A Mester dispõe de documentários e livros de arte com aprovação na Lei Rouanet. Sua empresa pode investir em cultura com dedução de até 100% do IR.</p>
       </div>
-      <a href="{% url 'core:pre_aprovados' %}" class="aprovados-btn">Ver Projetos →</a>
+      <a href="{% url 'core:projetos' %}" class="aprovados-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Ver Projetos
+      </a>
     </section>
   </div>
 

@@ -262,6 +262,65 @@
     }
     .f-sister:hover { background: rgba(200,16,46,0.1); }
 
+    /* ── NEWSLETTER ─────────────────────── */
+    .f-newsletter {
+      padding: 40px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .f-newsletter-text h4 {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 400;
+      color: #EDE9E3;
+      margin-bottom: 6px;
+    }
+    .f-newsletter-text p {
+      font-size: 13px;
+      color: #5C5850;
+      line-height: 1.6;
+    }
+    .f-newsletter-form {
+      display: flex;
+      gap: 0;
+      max-width: 420px;
+      width: 100%;
+    }
+    .f-newsletter-form input {
+      flex: 1;
+      padding: 13px 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-right: none;
+      color: #EDE9E3;
+      font-size: 14px;
+      font-family: var(--sans);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .f-newsletter-form input::placeholder { color: #5C5850; }
+    .f-newsletter-form input:focus { border-color: var(--red); }
+    .f-newsletter-form button {
+      padding: 13px 24px;
+      background: var(--red);
+      border: 1px solid var(--red);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-family: var(--sans);
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .f-newsletter-form button:hover { background: #a00d28; }
+
     .footer-bottom {
       display: flex; justify-content: space-between; align-items: center;
     }
@@ -285,6 +344,8 @@
       footer { padding: 48px 24px 32px; }
       .f-logo img { height: 72px; max-width: 320px; }
       .footer-top { grid-template-columns: 1fr; gap: 36px; }
+      .f-newsletter { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .f-newsletter-form { max-width: 100%; }
       .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
     }
 
@@ -361,13 +422,12 @@
       <img src="{% static 'core/img/logo.png' %}" alt="Mester comunicação">
     </a>
     <ul class="nav-links">
-      <li><a href="{% url 'core:home' %}"{% if request.resolver_match.url_name == 'home' %} class="active"{% endif %}>Home</a></li>
+      <li><a href="{% url 'core:home' %}"{% if request.resolver_match.url_name == 'home' %} class="active"{% endif %}>Mester</a></li>
       <li><a href="{% url 'core:projetos' %}"{% if request.resolver_match.url_name == 'projetos' or request.resolver_match.url_name == 'projeto_detalhe' %} class="active"{% endif %}>Projetos</a></li>
-      <li><a href="{% url 'core:pre_aprovados' %}"{% if request.resolver_match.url_name == 'pre_aprovados' or request.resolver_match.url_name == 'pre_aprovado_detalhe' %} class="active"{% endif %}>Pré-Aprovados</a></li>
-      <li><a href="{% url 'core:audiovisual' %}"{% if request.resolver_match.url_name == 'audiovisual' %} class="active"{% endif %}>Audiovisual</a></li>
+      <li><a href="{% url 'core:documentarios' %}"{% if request.resolver_match.url_name == 'documentarios' or request.resolver_match.url_name == 'documentario_detalhe' %} class="active"{% endif %}>Documentários</a></li>
       <li><a href="{% url 'core:livros' %}"{% if request.resolver_match.url_name == 'livros' %} class="active"{% endif %}>Livros</a></li>
-      <li><a href="{% url 'core:quem_somos' %}"{% if request.resolver_match.url_name == 'quem_somos' %} class="active"{% endif %}>Quem Somos</a></li>
-      <li><a href="{% url 'core:contato' %}"{% if request.resolver_match.url_name == 'contato' %} class="active"{% endif %}>Contato</a></li>
+      <li><a href="{% url 'core:educacao' %}"{% if request.resolver_match.url_name == 'educacao' %} class="active"{% endif %}>Educação</a></li>
+      <li><a href="{% url 'core:sobre' %}"{% if request.resolver_match.url_name == 'sobre' %} class="active"{% endif %}>Sobre</a></li>
     </ul>
   </nav>
 
@@ -385,13 +445,11 @@
       <div class="f-col">
         <h4>Navegação</h4>
         <ul>
-          <li><a href="{% url 'core:home' %}#abordagem">Abordagem</a></li>
-          <li><a href="{% url 'core:home' %}#beneficios">Leis de Incentivo</a></li>
           <li><a href="{% url 'core:projetos' %}">Projetos</a></li>
-          <li><a href="{% url 'core:pre_aprovados' %}">Pré-Aprovados</a></li>
-          <li><a href="{% url 'core:audiovisual' %}">Audiovisual</a></li>
+          <li><a href="{% url 'core:documentarios' %}">Documentários</a></li>
           <li><a href="{% url 'core:livros' %}">Livros</a></li>
-          <li><a href="{% url 'core:quem_somos' %}">Quem Somos</a></li>
+          <li><a href="{% url 'core:educacao' %}">Educação</a></li>
+          <li><a href="{% url 'core:sobre' %}">Sobre</a></li>
           <li><a href="{% url 'core:contato' %}">Contato</a></li>
         </ul>
       </div>
@@ -407,6 +465,16 @@
           Conheça também: crisburmester.com →
         </a>
       </div>
+    </div>
+    <div class="f-newsletter">
+      <div class="f-newsletter-text">
+        <h4>Receba nossas novidades</h4>
+        <p>Cadastre-se para acompanhar projetos, lançamentos e conteúdo exclusivo.</p>
+      </div>
+      <form class="f-newsletter-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Enviado!'; this.querySelector('input').value='';">
+        <input type="email" placeholder="Seu e-mail" required>
+        <button type="submit">Inscrever</button>
+      </form>
     </div>
     <div class="footer-bottom">
       <p class="f-copy">© 2026 Mester Produções. Todos os direitos reservados.</p>
