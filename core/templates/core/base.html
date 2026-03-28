@@ -288,11 +288,12 @@
     .f-newsletter-form {
       display: flex;
       gap: 0;
-      max-width: 420px;
+      max-width: 560px;
       width: 100%;
     }
     .f-newsletter-form input {
       flex: 1;
+      min-width: 0;
       padding: 13px 18px;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.1);
@@ -345,7 +346,9 @@
       .f-logo img { height: 72px; max-width: 320px; }
       .footer-top { grid-template-columns: 1fr; gap: 36px; }
       .f-newsletter { flex-direction: column; align-items: flex-start; gap: 20px; }
-      .f-newsletter-form { max-width: 100%; }
+      .f-newsletter-form { max-width: 100%; flex-wrap: wrap; }
+      .f-newsletter-form input { flex: 1 1 100%; border-right: 1px solid rgba(255,255,255,0.1); }
+      .f-newsletter-form button { width: 100%; }
       .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
     }
 
@@ -471,8 +474,9 @@
         <h4>Receba nossas novidades</h4>
         <p>Cadastre-se para acompanhar projetos, lançamentos e conteúdo exclusivo.</p>
       </div>
-      <form class="f-newsletter-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Enviado!'; this.querySelector('input').value='';">
-        <input type="email" placeholder="Seu e-mail" required>
+      <form class="f-newsletter-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Enviado ✓'; this.reset();">
+        <input type="text" name="nome" placeholder="Seu nome" autocomplete="given-name" required>
+        <input type="email" name="email" placeholder="Seu e-mail" autocomplete="email" required>
         <button type="submit">Inscrever</button>
       </form>
     </div>
